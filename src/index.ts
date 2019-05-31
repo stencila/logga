@@ -40,14 +40,14 @@ export interface LogHandler {
  * @param level
  */
 function emitLogData(info: LogInfo | string, appName: string, level: LogLevel) {
-  let message
+  let message: string
   if (typeof info === 'object') {
     message = info.message
   } else {
     message = info
   }
 
-  let stackTrace
+  let stackTrace: string
   if (typeof info === 'object' && info.stackTrace) {
     stackTrace = info.stackTrace
   } else {
@@ -71,7 +71,11 @@ export function addHandler(handler?: LogHandler) {
   handler =
     handler ||
     function(data: LogData) {
-      console.error(data.appName + ': ' + data.message)
+      console.error(
+        `${data.appName} - [${LogLevel[data.level].toUpperCase()}] - ${
+          data.message
+        }`
+      )
     }
   // @ts-ignore
   process.on(LOG_EVENT_NAME, handler)
