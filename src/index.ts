@@ -11,21 +11,6 @@ enum LogLevel {
   debug
 }
 
-interface LoggerFunction {
-  (appName: string, message: string | LogData, level: LogLevel)
-}
-
-interface LogDefinition {
-  emerg: LoggerFunction
-  alert: LoggerFunction
-  crit: LoggerFunction
-  error: LoggerFunction
-  warning: LoggerFunction
-  notice: LoggerFunction
-  info: LoggerFunction
-  debug: LoggerFunction
-}
-
 /**
  * This function sends the log off to be processed.
  *
@@ -40,14 +25,14 @@ function emitLog(appName: string, data: LogData) {
 export interface LogData {
   message: string
   stackTrace?: string
-  level: LogLevel
+  level?: LogLevel
 }
 
 /**
  * The listener for the log event must have this function signature.
  */
 export interface LoggerHandler {
-  (appName: string, message: LogData)
+  (appName: string, data: LogData)
 }
 
 /**
@@ -105,7 +90,7 @@ export function addLogHandler(handler?: LoggerHandler) {
  *
  * @param appName
  */
-export function getLogger(appName: string): LogDefinition {
+export function getLogger(appName: string) {
   return {
     emerg(message: string | LogData) {
       emitLog(appName, convertToLogData(message, LogLevel.emerg))
