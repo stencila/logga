@@ -1,10 +1,12 @@
 {
-  "name": "logga",
-  "version": "0.1.0",
-  "description": "A unified approach to logging across related modules",
+  "name": "@stencila/logga",
+  "version": "0.1.1",
+  "description": "Unified logging across related Javascript modules",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
+    "test": "jest",
+    "cover": "jest --collectCoverage",
     "build": "tsc src/index.ts --outDir dist --declaration"
   },
   "repository": {
@@ -26,11 +28,21 @@
     "@semantic-release/github": "^5.2.10",
     "@semantic-release/npm": "^5.1.7",
     "@semantic-release/release-notes-generator": "^7.1.4",
+    "@types/jest": "^24.0.13",
     "husky": "^2.3.0",
+    "jest": "^24.8.0",
     "lint-staged": "^8.1.7",
     "prettier": "^1.17.1",
     "semantic-release": "^15.13.12",
+    "ts-jest": "^24.0.2",
     "typescript": "^3.5.1"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "testMatch": [
+      "**/tests/**/*.test.ts"
+    ]
   },
   "prettier": {
     "singleQuote": true,
