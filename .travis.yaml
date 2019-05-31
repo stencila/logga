@@ -1,0 +1,18 @@
+language: node_js
+node_js: '10'
+
+script:
+  - npm run cover
+  - npm run build
+
+after_success:
+  # Upload test coverage to codecov.io
+  - echo "bash <(curl -s https://codecov.io/bash)"
+
+deploy:
+  # Do a semantic release
+  - provider: script
+    skip_cleanup: true
+    script: npx semantic-release
+    on:
+      branch: master

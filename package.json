@@ -1,7 +1,7 @@
 {
-  "name": "logga",
-  "version": "0.1.0",
-  "description": "A unified approach to logging across related modules",
+  "name": "@stencila/logga",
+  "version": "0.1.1",
+  "description": "Unified logging across related Javascript modules",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
