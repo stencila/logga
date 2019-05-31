@@ -1,6 +1,6 @@
-const LOG_EVENT_NAME = 'stencila:logga'
+const LOG_EVENT_NAME = Symbol('stencila:logga')
 
-enum LogLevel {
+export enum LogLevel {
   emerg = 0,
   alert,
   crit,
@@ -11,110 +11,105 @@ enum LogLevel {
   debug
 }
 
-/**
- * This function sends the log off to be processed.
- *
- * @param appName
- * @param data
- */
-function emitLog(appName: string, data: LogData) {
-  // @ts-ignore
-  process.emit(LOG_EVENT_NAME, appName, data)
+export interface LogInfo {
+  message?: string
+  stackTrace?: string
 }
 
 export interface LogData {
+  appName: string
+  level: LogLevel
   message: string
-  stackTrace?: string
-  level?: LogLevel
+  stackTrace: string
 }
 
 /**
- * The listener for the log event must have this function signature.
+ * A listener for the log event must have this function signature.
  */
-export interface LoggerHandler {
-  (appName: string, data: LogData)
+export interface LogHandler {
+  (data: LogData)
 }
 
 /**
- * Take a message string, or LogData object, and always returns a LogData object.
+ * Take a message `string`, or `LogInfo` object,
+ * and emit an event with a `LogData` object.
  *
- * If LogData already has a level set, then level will not be applied to it.
- * If LogData does not have a stackTrace attached, one is generated and set on the LogData.
+ * If `LogData` does not have a stackTrace attached, one is generated and set on the `LogData`.
  *
- * @param data
+ * @param info
  * @param level
  */
-function convertToLogData(data: LogData | string, level: LogLevel): LogData {
-  let transformedData: LogData
-
-  if (typeof data === 'string') {
-    transformedData = {
-      message: data,
-      level: level
-    }
+function emitLogData(info: LogInfo | string, appName: string, level: LogLevel) {
+  let message
+  if (typeof info === 'object') {
+    message = info.message
   } else {
-    transformedData = data
+    message = info
   }
 
-  if (!transformedData.stackTrace) {
+  let stackTrace
+  if (typeof info === 'object' && info.stackTrace) {
+    stackTrace = info.stackTrace
+  } else {
     const error = new Error()
-    transformedData.stackTrace = error.stack
+    stackTrace = error.stack
   }
 
-  return transformedData
+  const data: LogData = { appName, level, message, stackTrace }
+
+  // @ts-ignore
+  process.emit(LOG_EVENT_NAME, data)
 }
 
 /**
- * To decouple the listener from sender implementation, clients should use this function to set up a listener.
+ * To decouple the listener from sender implementation, clients should use
+ * this function to set up a listener.
  *
- * @param handler
+ * @param handler A function that handles the log data
  */
-export function addLogHandler(handler?: LoggerHandler) {
-  if (!handler) {
-    handler = function(appName: string, data: LogData) {
-      const outputFunction =
-        data.level <= LogLevel.error ? console.error : console.log
-
-      outputFunction(appName + ': ' + data.message)
+export function addHandler(handler?: LogHandler) {
+  handler =
+    handler ||
+    function(data: LogData) {
+      console.error(data.appName + ': ' + data.message)
     }
-  }
-
   // @ts-ignore
   process.on(LOG_EVENT_NAME, handler)
 }
 
 /**
- * Get a logger for the specific appName.
+ * Get a logger for the specific application or package.
  *
- * Each logger function is the public interface for posting messages.
+ * Each of the returned logger functions are the public interface for
+ * posting log messages.
  *
- * @param appName
+ * @param appName The unique application or package name
  */
 export function getLogger(appName: string) {
   return {
-    emerg(message: string | LogData) {
-      emitLog(appName, convertToLogData(message, LogLevel.emerg))
+    emerg(message: string | LogInfo) {
+      emitLogData(message, appName, LogLevel.emerg)
     },
-    alert(message: string | LogData) {
-      emitLog(appName, convertToLogData(message, LogLevel.alert))
+    alert(message: string | LogInfo) {
+      emitLogData(message, appName, LogLevel.alert)
     },
-    crit(message: string | LogData) {
-      emitLog(appName, convertToLogData(message, LogLevel.crit))
+    crit(message: string | LogInfo) {
+      emitLogData(message, appName, LogLevel.crit)
     },
-    error(message: string | LogData) {
-      emitLog(appName, convertToLogData(message, LogLevel.error))
+    error(message: string | LogInfo) {
+      emitLogData(message, appName, LogLevel.error)
     },
-    warning(message: string | LogData) {
-      emitLog(appName, convertToLogData(message, LogLevel.warning))
+    warning(message: string | LogInfo) {
+      emitLogData(message, appName, LogLevel.warning)
     },
-    notice(message: string | LogData) {
-      emitLog(appName, convertToLogData(message, LogLevel.notice))
+    notice(message: string | LogInfo) {
+      emitLogData(message, appName, LogLevel.notice)
     },
-    info(message: string | LogData) {
-      emitLog(appName, convertToLogData(message, LogLevel.info))
+    info(message: string | LogInfo) {
+      emitLogData(message, appName, LogLevel.info)
     },
-    debug(message: string | LogData) {
-      emitLog(appName, convertToLogData(message, LogLevel.debug))
+    debug(message: string | LogInfo) {
+      emitLogData(message, appName, LogLevel.debug)
     }
   }
 }
