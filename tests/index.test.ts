@@ -14,7 +14,9 @@ test('logga', () => {
   const consoleError = jest.spyOn(console, 'error')
 
   log.debug('a debug message')
-  expect(consoleError).toHaveBeenCalledWith(__filename + ': a debug message')
+  expect(consoleError).toHaveBeenCalledWith(
+    __filename + ' - [DEBUG] - a debug message'
+  )
   expect(events.length).toBe(1)
   expect(events[0].appName).toBe(APPNAME)
   expect(events[0].level).toBe(LogLevel.debug)
@@ -25,7 +27,9 @@ test('logga', () => {
     message: 'a info message',
     stackTrace: 'Just a made up trace'
   })
-  expect(consoleError).toHaveBeenCalledWith(__filename + ': a info message')
+  expect(consoleError).toHaveBeenCalledWith(
+    __filename + ' - [INFO] - a info message'
+  )
   expect(events.length).toBe(2)
   expect(events[1].appName).toBe(APPNAME)
   expect(events[1].level).toBe(LogLevel.info)
