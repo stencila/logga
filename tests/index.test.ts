@@ -36,21 +36,9 @@ test('logga', () => {
   expect(events[1].message).toBe('a info message')
   expect(events[1].stackTrace).toBe('Just a made up trace')
 
-  log.notice('a notice message')
-  expect(events[2].level).toBe(LogLevel.notice)
+  log.warn('a warning message')
+  expect(events[2].level).toBe(LogLevel.warn)
 
-  log.warning('a warning message')
-  expect(events[3].level).toBe(LogLevel.warning)
-
-  log.error('a error message')
-  expect(events[4].level).toBe(LogLevel.error)
-
-  log.crit('a crit message')
-  expect(events[5].level).toBe(LogLevel.crit)
-
-  log.alert('a alert message')
-  expect(events[6].level).toBe(LogLevel.alert)
-
-  log.emerg('a emerg message')
-  expect(events[7].level).toBe(LogLevel.emerg)
+  log.error('an error message')
+  expect(events[3].level).toBe(LogLevel.error)
 })

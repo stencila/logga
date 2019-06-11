@@ -1,12 +1,8 @@
 const LOG_EVENT_NAME = Symbol('stencila:logga')
 
 export enum LogLevel {
-  emerg = 0,
-  alert,
-  crit,
-  error,
-  warning,
-  notice,
+  error = 0,
+  warn,
   info,
   debug
 }
@@ -91,23 +87,11 @@ export function addHandler(handler?: LogHandler) {
  */
 export function getLogger(appName: string) {
   return {
-    emerg(message: string | LogInfo) {
-      emitLogData(message, appName, LogLevel.emerg)
-    },
-    alert(message: string | LogInfo) {
-      emitLogData(message, appName, LogLevel.alert)
-    },
-    crit(message: string | LogInfo) {
-      emitLogData(message, appName, LogLevel.crit)
-    },
     error(message: string | LogInfo) {
       emitLogData(message, appName, LogLevel.error)
     },
-    warning(message: string | LogInfo) {
-      emitLogData(message, appName, LogLevel.warning)
-    },
-    notice(message: string | LogInfo) {
-      emitLogData(message, appName, LogLevel.notice)
+    warn(message: string | LogInfo) {
+      emitLogData(message, appName, LogLevel.warn)
     },
     info(message: string | LogInfo) {
       emitLogData(message, appName, LogLevel.info)
