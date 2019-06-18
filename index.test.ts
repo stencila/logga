@@ -1,4 +1,4 @@
-import { getLogger, addHandler, LogData, LogLevel } from '../src'
+import { getLogger, addHandler, LogData, LogLevel } from './index'
 
 test('logga', () => {
   const TAG = __filename
@@ -23,9 +23,7 @@ test('logga', () => {
   expect(events[0].message).toBe('a debug message')
   expect(events[0].stack).toMatch(/^Error:/)
   // Second line (first call stack) in stack trace should be this file
-  expect(events[0].stack.split('\n')[1]).toMatch(
-    /logga\/tests\/index\.test\.ts/
-  )
+  expect(events[0].stack.split('\n')[1]).toMatch(/logga\/index\.test\.ts/)
 
   log.info({
     message: 'a info message',

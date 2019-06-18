@@ -9,8 +9,9 @@
   ],
   "scripts": {
     "test": "jest",
-    "cover": "jest --collectCoverage",
-    "build": "tsc src/index.ts --outDir dist --declaration"
+    "test:cover": "jest --collectCoverage",
+    "test:watch": "jest --watchAll",
+    "build": "tsc index.ts --outDir dist --declaration"
   },
   "repository": {
     "type": "git",
@@ -19,7 +20,7 @@
   "keywords": [
     "logging"
   ],
-  "author": "",
+  "author": "Stencila <hello@stenci.la>",
   "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/stencila/logga/issues"
@@ -27,16 +28,15 @@
   "homepage": "https://github.com/stencila/logga#readme",
   "devDependencies": {
     "@stencila/dev-config": "^1.0.4",
-    "@types/jest": "^24.0.13",
-    "jest": "^24.8.0",
-    "ts-jest": "^24.0.2",
-    "typescript": "^3.5.1"
+    "@stencila/typescript-boilerplate": "^1.1.1",
+    "@types/jest": "^24.0.15",
+    "typescript": "^3.5.2"
   },
   "jest": {
     "preset": "ts-jest",
     "testEnvironment": "node",
     "testMatch": [
-      "**/tests/**/*.test.ts"
+      "**/index.test.ts"
     ]
   },
   "commitlint": {
