@@ -7,7 +7,7 @@ script:
 
 after_success:
   # Upload test coverage to codecov.io
-  - echo "bash <(curl -s https://codecov.io/bash)"
+  - bash <(curl -s https://codecov.io/bash)
 
 deploy:
   # Do a semantic release
