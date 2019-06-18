@@ -9,14 +9,14 @@ export enum LogLevel {
 
 export interface LogInfo {
   message?: string
-  stackTrace?: string
+  stack?: string
 }
 
 export interface LogData {
-  appName: string
+  tag: string
   level: LogLevel
   message: string
-  stackTrace: string
+  stack: string
 }
 
 /**
@@ -30,12 +30,12 @@ export interface LogHandler {
  * Take a message `string`, or `LogInfo` object,
  * and emit an event with a `LogData` object.
  *
- * If `LogData` does not have a stackTrace attached, one is generated and set on the `LogData`.
+ * If `LogData` does not have a stack attached, one is generated and set on the `LogData`.
  *
  * @param info
  * @param level
  */
-function emitLogData(info: LogInfo | string, appName: string, level: LogLevel) {
+function emitLogData(info: LogInfo | string, tag: string, level: LogLevel) {
   let message: string
   if (typeof info === 'object') {
     message = info.message
@@ -43,15 +43,15 @@ function emitLogData(info: LogInfo | string, appName: string, level: LogLevel) {
     message = info
   }
 
-  let stackTrace: string
-  if (typeof info === 'object' && info.stackTrace) {
-    stackTrace = info.stackTrace
+  let stack: string
+  if (typeof info === 'object' && info.stack) {
+    stack = info.stack
   } else {
     const error = new Error()
-    stackTrace = error.stack
+    stack = error.stack
   }
 
-  const data: LogData = { appName, level, message, stackTrace }
+  const data: LogData = { tag, level, message, stack }
 
   // @ts-ignore
   process.emit(LOG_EVENT_NAME, data)
@@ -68,7 +68,7 @@ export function addHandler(handler?: LogHandler) {
     handler ||
     function(data: LogData) {
       console.error(
-        `${data.appName} - [${LogLevel[data.level].toUpperCase()}] - ${
+        `${data.tag} - [${LogLevel[data.level].toUpperCase()}] - ${
           data.message
         }`
       )
@@ -83,21 +83,21 @@ export function addHandler(handler?: LogHandler) {
  * Each of the returned logger functions are the public interface for
  * posting log messages.
  *
- * @param appName The unique application or package name
+ * @param tag The unique application or package name
  */
-export function getLogger(appName: string) {
+export function getLogger(tag: string) {
   return {
     error(message: string | LogInfo) {
-      emitLogData(message, appName, LogLevel.error)
+      emitLogData(message, tag, LogLevel.error)
     },
     warn(message: string | LogInfo) {
-      emitLogData(message, appName, LogLevel.warn)
+      emitLogData(message, tag, LogLevel.warn)
     },
     info(message: string | LogInfo) {
-      emitLogData(message, appName, LogLevel.info)
+      emitLogData(message, tag, LogLevel.info)
     },
     debug(message: string | LogInfo) {
-      emitLogData(message, appName, LogLevel.debug)
+      emitLogData(message, tag, LogLevel.debug)
     }
   }
 }

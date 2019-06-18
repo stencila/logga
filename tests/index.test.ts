@@ -1,8 +1,8 @@
 import { getLogger, addHandler, LogData, LogLevel } from '../src'
 
 test('logga', () => {
-  const APPNAME = __filename
-  const log = getLogger(APPNAME)
+  const TAG = __filename
+  const log = getLogger(TAG)
 
   // Will log to console.error
   addHandler()
@@ -18,23 +18,23 @@ test('logga', () => {
     __filename + ' - [DEBUG] - a debug message'
   )
   expect(events.length).toBe(1)
-  expect(events[0].appName).toBe(APPNAME)
+  expect(events[0].tag).toBe(TAG)
   expect(events[0].level).toBe(LogLevel.debug)
   expect(events[0].message).toBe('a debug message')
-  expect(events[0].stackTrace).toMatch(/^Error:/)
+  expect(events[0].stack).toMatch(/^Error:/)
 
   log.info({
     message: 'a info message',
-    stackTrace: 'Just a made up trace'
+    stack: 'Just a made up trace'
   })
   expect(consoleError).toHaveBeenCalledWith(
     __filename + ' - [INFO] - a info message'
   )
   expect(events.length).toBe(2)
-  expect(events[1].appName).toBe(APPNAME)
+  expect(events[1].tag).toBe(TAG)
   expect(events[1].level).toBe(LogLevel.info)
   expect(events[1].message).toBe('a info message')
-  expect(events[1].stackTrace).toBe('Just a made up trace')
+  expect(events[1].stack).toBe('Just a made up trace')
 
   log.warn('a warning message')
   expect(events[2].level).toBe(LogLevel.warn)
