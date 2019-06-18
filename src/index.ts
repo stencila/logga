@@ -48,7 +48,10 @@ function emitLogData(info: LogInfo | string, tag: string, level: LogLevel) {
     stack = info.stack
   } else {
     const error = new Error()
-    stack = error.stack
+    // Remove the first three lines of the stack trace which
+    // are not useful (see issue #3)
+    const lines = error.stack.split('\n')
+    stack = [lines[0], ...lines.slice(3)].join('\n')
   }
 
   const data: LogData = { tag, level, message, stack }

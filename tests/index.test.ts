@@ -22,6 +22,10 @@ test('logga', () => {
   expect(events[0].level).toBe(LogLevel.debug)
   expect(events[0].message).toBe('a debug message')
   expect(events[0].stack).toMatch(/^Error:/)
+  // Second line (first call stack) in stack trace should be this file
+  expect(events[0].stack.split('\n')[1]).toMatch(
+    /logga\/tests\/index\.test\.ts/
+  )
 
   log.info({
     message: 'a info message',
