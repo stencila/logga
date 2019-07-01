@@ -11,6 +11,7 @@
     "test": "jest",
     "test:cover": "jest --collectCoverage",
     "test:watch": "jest --watchAll",
+    "test:untty": "npx ts-node untty.test.ts 2>log.json",
     "build": "tsc index.ts --outDir dist --declaration"
   },
   "repository": {
@@ -27,10 +28,11 @@
   },
   "homepage": "https://github.com/stencila/logga#readme",
   "devDependencies": {
-    "@stencila/dev-config": "^1.0.4",
+    "@stencila/dev-config": "^1.0.6",
     "@types/jest": "^24.0.15",
     "jest": "^24.8.0",
     "ts-jest": "^24.0.2",
+    "ts-node": "^8.3.0",
     "typescript": "^3.5.2"
   },
   "jest": {
@@ -69,6 +71,5 @@
   "prettier": "@stencila/dev-config/prettier-config.json",
   "release": {
     "extends": "@stencila/semantic-release-config"
-  },
-  "dependencies": {}
+  }
 }

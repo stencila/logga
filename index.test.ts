@@ -1,11 +1,8 @@
 import { getLogger, addHandler, LogData, LogLevel } from './index'
 
 test('logga', () => {
-  const TAG = __filename
+  const TAG = 'logga:jest'
   const log = getLogger(TAG)
-
-  // Will log to console.error
-  addHandler()
 
   // Will collect logs in this array
   let events: LogData[] = []
@@ -15,7 +12,7 @@ test('logga', () => {
 
   log.debug('a debug message')
   expect(consoleError).toHaveBeenCalledWith(
-    __filename + ' - [DEBUG] - a debug message'
+    expect.stringMatching(/DEBUG(.*)?a debug message/)
   )
   expect(events.length).toBe(1)
   expect(events[0].tag).toBe(TAG)
@@ -26,16 +23,16 @@ test('logga', () => {
   expect(events[0].stack.split('\n')[1]).toMatch(/logga\/index\.test\.ts/)
 
   log.info({
-    message: 'a info message',
+    message: 'an info message',
     stack: 'Just a made up trace'
   })
   expect(consoleError).toHaveBeenCalledWith(
-    __filename + ' - [INFO] - a info message'
+    expect.stringMatching(/INFO(.*)?an info message/)
   )
   expect(events.length).toBe(2)
   expect(events[1].tag).toBe(TAG)
   expect(events[1].level).toBe(LogLevel.info)
-  expect(events[1].message).toBe('a info message')
+  expect(events[1].message).toBe('an info message')
   expect(events[1].stack).toBe('Just a made up trace')
 
   log.warn('a warning message')

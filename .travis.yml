@@ -3,6 +3,7 @@ node_js: '10'
 
 script:
   - npm run test:cover
+  - npm run test:untty
   - npm run build
 
 after_success:
