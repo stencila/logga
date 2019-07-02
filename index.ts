@@ -107,7 +107,7 @@ export function replaceHandlers(handler: LogHandler) {
  * Prints the data to stderr:
  *
  * - with cutesy emoji, colours and stack (for errors) if stderr is TTY (for human consumption)
- * - as JSON if stderr is not TTY not (for machine consumption e.g. log files)
+ * - as JSON if stderr is not TTY (for machine consumption e.g. log files)
  *
  * @param data The log data to handle
  */
