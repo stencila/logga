@@ -67,18 +67,80 @@ function emitLogData(info: LogInfo | string, tag: string, level: LogLevel) {
  * @param handler A function that handles the log data
  */
 export function addHandler(handler?: LogHandler) {
-  handler =
-    handler ||
-    function(data: LogData) {
-      console.error(
-        `${data.tag} - [${LogLevel[data.level].toUpperCase()}] - ${
-          data.message
-        }`
-      )
-    }
+  handler = handler || defaultHandler
   // @ts-ignore
-  process.on(LOG_EVENT_NAME, handler)
+  process.addListener(LOG_EVENT_NAME, handler)
 }
+
+/**
+ * Remove a handler.
+ *
+ * @param handler Handler to remove
+ */
+export function removeHandler(handler?: LogHandler) {
+  handler = handler || defaultHandler
+  process.removeListener(LOG_EVENT_NAME, handler)
+}
+
+/**
+ * Remove all handlers.
+ */
+export function removeAllHandlers() {
+  process.removeAllListeners(LOG_EVENT_NAME)
+}
+
+/**
+ * Replace all existing handlers with a new handler.
+ *
+ * This is a convenience function that can be used to
+ * replace the default handler with a new one which logs
+ * to the console.
+ */
+export function replaceHandlers(handler: LogHandler) {
+  removeAllHandlers()
+  addHandler(handler)
+}
+
+/**
+ * Default log data handler.
+ *
+ * Prints the data to stderr:
+ *
+ * - with cutesy emoji, colours and stack (for errors) if stderr is TTY (for human consumption)
+ * - as JSON if stderr is not TTY (for machine consumption e.g. log files)
+ *
+ * @param data The log data to handle
+ */
+export function defaultHandler(data: LogData) {
+  let entry
+  if (process.stderr.isTTY) {
+    const { tag, level, message, stack } = data
+    const index = level < 0 ? 0 : level > 3 ? 3 : level
+    const label = LogLevel[index].toUpperCase().padEnd(5, ' ')
+    const emoji = [
+      '🚨', // error
+      '⚠', // warn
+      '🛈', // info
+      '🐛' // debug
+    ][index]
+    const colour = [
+      '\u001b[31;1m', // red
+      '\u001b[33;1m', // yellow
+      '\u001b[34;1m', // blue
+      '\u001b[30;1m' // grey (bright black)
+    ][index]
+    const cyan = '\u001b[36m'
+    const reset = '\u001b[0m'
+    entry = `${emoji} ${colour}${label}${reset} ${cyan}${tag}${reset} ${message}`
+    if (level === LogLevel.error) entry += '\n  ' + stack
+  } else {
+    entry = JSON.stringify({ time: new Date().toISOString(), ...data })
+  }
+  console.error(entry)
+}
+
+// Always enable the default handler
+addHandler(defaultHandler)
 
 /**
  * Get a logger for the specific application or package.
