@@ -26,13 +26,12 @@ npm install --save @stencila/logga
 
 ## Usage
 
-Create a new logger by calling `getLogger` with a unique tag to identify your app and/or module. Register a handler by calling `addHandler` with a handling function (defaults to printing to the `process.stderr`). Then emit log events using the `debug`, `info`, `warn` or `error` function (you can pass them a message string or a `LogInfo` object).
+Create a new logger by calling `getLogger` with a unique tag to identify your app and/or module. Then emit log events using the `debug`, `info`, `warn` or `error` function (you can pass them a message string or a `LogInfo` object).
 
 ```ts
-import { getLogger, addHandler } from '@stencila/logga'
+import { getLogger } from '@stencila/logga'
 
 const logger = getLogger('app:module')
-addHandler()
 
 function doSomething() {
   logger.debug('A debug message')
@@ -48,3 +47,10 @@ function doSomething() {
   }
 }
 ```
+
+The default log handler prints log data to `stderr`:
+
+- with emoji, colours and stack trace (for errors) if `stderr` is TTY (for human consumption)
+- as JSON, with a time stamp, if `stderr` is not TTY (for machine consumption e.g. log files)
+
+You can register a new handler by calling `addHandler` with a handling function. Or use `replaceHandlers` to replace any existing log handlers (including the default) with your custom handler.

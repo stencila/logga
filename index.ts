@@ -69,7 +69,36 @@ function emitLogData(info: LogInfo | string, tag: string, level: LogLevel) {
 export function addHandler(handler?: LogHandler) {
   handler = handler || defaultHandler
   // @ts-ignore
-  process.on(LOG_EVENT_NAME, handler)
+  process.addListener(LOG_EVENT_NAME, handler)
+}
+
+/**
+ * Remove a handler.
+ *
+ * @param handler Handler to remove
+ */
+export function removeHandler(handler?: LogHandler) {
+  handler = handler || defaultHandler
+  process.removeListener(LOG_EVENT_NAME, handler)
+}
+
+/**
+ * Remove all handlers.
+ */
+export function removeAllHandlers() {
+  process.removeAllListeners(LOG_EVENT_NAME)
+}
+
+/**
+ * Replace all existing handlers with a new handler.
+ *
+ * This is a convenience function that can be used to
+ * replace the default handler with a new one which logs
+ * to the console.
+ */
+export function replaceHandlers(handler: LogHandler) {
+  removeAllHandlers()
+  addHandler(handler)
 }
 
 /**
