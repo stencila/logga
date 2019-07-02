@@ -12,16 +12,10 @@ test('logging', () => {
   const TAG = 'tests:logging'
   const log = getLogger(TAG)
 
-  // Will collect logs in this array
   let events: LogData[] = []
   addHandler(data => events.push(data))
 
-  const consoleError = jest.spyOn(console, 'error')
-
   log.debug('a debug message')
-  expect(consoleError).toHaveBeenCalledWith(
-    expect.stringMatching(/DEBUG(.*)?a debug message/)
-  )
   expect(events.length).toBe(1)
   expect(events[0].tag).toBe(TAG)
   expect(events[0].level).toBe(LogLevel.debug)
@@ -34,9 +28,6 @@ test('logging', () => {
     message: 'an info message',
     stack: 'Just a made up trace'
   })
-  expect(consoleError).toHaveBeenCalledWith(
-    expect.stringMatching(/INFO(.*)?an info message/)
-  )
   expect(events.length).toBe(2)
   expect(events[1].tag).toBe(TAG)
   expect(events[1].level).toBe(LogLevel.info)
@@ -48,6 +39,20 @@ test('logging', () => {
 
   log.error('an error message')
   expect(events[3].level).toBe(LogLevel.error)
+})
+
+test('TTY', () => {
+  const log = getLogger('tests:tty')
+
+  // Fake that we are using a TTY device
+  process.stderr.isTTY = true
+  const consoleError = jest.spyOn(console, 'error')
+
+  log.error('an error message')
+
+  expect(consoleError).toHaveBeenCalledWith(
+    expect.stringMatching(/ERROR(.*)?an error message/)
+  )
 })
 
 test('non-TTY', () => {
