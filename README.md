@@ -10,9 +10,7 @@
 
 ## Why?
 
-We wanted to have a unified, consistent mechanism for emitting log event data across Javascript/Typescript projects. We wanted to decouple log event emission from log event consumption. We wanted something lightweight.
-
-For example, `encoda` and `dockta` are two Typescript projects that use `logga`. We want users of these projects to be able to use them as standalone tools and have log events printed at the command line. Both projects are also integrated into the `stencila` command line tool, and in the future, we'll also combine them into the `stencila` desktop Electron-based application. For each of these apps, we want to handle log events from both packages in a consistent way and display them in a way that is appropriate for the platform e.g. HTML messages when in Electron, log files when running as a server.
+We wanted to have a unified, consistent mechanism for emitting log event data across libraries. We wanted to decouple log event emission from log event consumption. We didn't want to have to pass `log` objects around everywhere. We wanted type safety. We wanted something lightweight.
 
 ## Approach
 
@@ -63,7 +61,7 @@ If `stderr` is not TTY log data os formatted for machine consumption (e.g. for l
 {"time":"2019-07-02T21:19:24.875Z","tag":"example","level":0,"message":"Woaaah something bad happened! I am an error object.","stack":"Error: I am an error object.\n    at Object.<anonymous> (/home/nokome/stencila/source/logga/example.js:27:9)\n    at Module._compile (internal/modules/cjs/loader.js:689:30)\n    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)\n    at Module.load (internal/modules/cjs/loader.js:599:32)\n    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)\n    at Function.Module._load (internal/modules/cjs/loader.js:530:3)\n    at Function.Module.runMain (internal/modules/cjs/loader.js:742:12)\n    at startup (internal/bootstrap/node.js:266:19)\n    at bootstrapNodeJSCore (internal/bootstrap/node.js:596:3)"}
 ```
 
-You can register a new handler by calling `addHandler` with a handling function. Or use `replaceHandlers` to replace any existing log handlers (including the default).
+You can register a new handler by calling `addHandler` with a handling function. Or use `replaceHandlers` to replace any existing log handlers (including the default). If you don't want any log handling at all, remove the default handler using `removeHandlers`.
 
 Logga can be used with a log handling library e.g. Winston, Pino.
 
@@ -84,3 +82,15 @@ addHandler((data: LogData) => {
     }
 })
 ```
+
+## See also
+
+See this [issue in `node-bunyan`](https://github.com/trentm/node-bunyan/issues/116) describing the use case for, and approaches to, a global, shared logger in Node.
+
+> I guess this is similar to the idea in log4j (likewise clones like log4js, Python's logging module, etc.) where logger objects are global to the process such that, e.g., log = logging.getLogger("foo") used in two separate modules gets the same logger.
+
+[`bole`](https://www.npmjs.com/package/bole) has the same goals as `logga` (but uses a singleton object instead of events)
+
+> `bole` is designed for global singleton use. Your application has many log sources, but they all aggregate to the same sources. You configure output in one place for an application, regardless of how many modules and dependencies are also using `bole` for logging.
+
+[`encoda`](https://github.com/stencila/encoda) and [`dockta`](https://github.com/stencila/dockta) are two Typescript projects that use `logga`. We want users of these projects to be able to use them as standalone tools and have log events printed at the command line. Both projects are also integrated into the `stencila` command line tool, and in the future, we'll also combine them into the `stencila` desktop Electron-based application. For each of these apps, we want to handle log events from both packages in a consistent way and display them in a way that is appropriate for the platform e.g. HTML messages when in Electron, log files when running as a server.

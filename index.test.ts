@@ -1,10 +1,10 @@
 import {
-  getLogger,
   addHandler,
+  getLogger,
   LogData,
   LogLevel,
   removeHandler,
-  removeAllHandlers,
+  removeHandlers,
   replaceHandlers
 } from './index'
 
@@ -98,7 +98,7 @@ test('adding and removing handlers', () => {
   log.info('')
   expect(events.length).toBe(8)
 
-  removeAllHandlers()
+  removeHandlers()
   log.info('')
   expect(events.length).toBe(8)
 
