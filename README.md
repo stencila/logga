@@ -64,3 +64,23 @@ If `stderr` is not TTY log data os formatted for machine consumption (e.g. for l
 ```
 
 You can register a new handler by calling `addHandler` with a handling function. Or use `replaceHandlers` to replace any existing log handlers (including the default).
+
+Logga can be used with a log handling library e.g. Winston, Pino.
+
+```javascript
+// In library, create a named logger
+const logger = getLogger('encoda')
+```
+
+```javascript
+// Handle the log messages in application code
+addHandler((data: LogData) => {
+    // Send off to log output function
+    winstonLogger.log(LogLevel[data.level], data.message);
+    
+    // or filter on tag
+    if (data.tag === 'encoda') {
+        // do something different
+    }
+})
+```
