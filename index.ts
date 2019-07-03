@@ -85,7 +85,7 @@ export function removeHandler(handler?: LogHandler) {
 /**
  * Remove all handlers.
  */
-export function removeAllHandlers() {
+export function removeHandlers() {
   process.removeAllListeners(LOG_EVENT_NAME)
 }
 
@@ -97,7 +97,7 @@ export function removeAllHandlers() {
  * to the console.
  */
 export function replaceHandlers(handler: LogHandler) {
-  removeAllHandlers()
+  removeHandlers()
   addHandler(handler)
 }
 
@@ -139,8 +139,9 @@ export function defaultHandler(data: LogData) {
   console.error(entry)
 }
 
-// Always enable the default handler
-addHandler(defaultHandler)
+// Enable the default handler if there no other handler
+// already enabled e.g. by another package using `logga`
+if (!process.listenerCount(LOG_EVENT_NAME)) addHandler(defaultHandler)
 
 /**
  * Get a logger for the specific application or package.
