@@ -16,14 +16,14 @@ export interface LogData {
   tag: string
   level: LogLevel
   message: string
-  stack: string
+  stack?: string
 }
 
 /**
  * A listener for the log event must have this function signature.
  */
 export interface LogHandler {
-  (data: LogData)
+  (data: LogData): void
 }
 
 /**
@@ -36,26 +36,31 @@ export interface LogHandler {
  * @param info
  * @param level
  */
-function emitLogData(info: LogInfo | string, tag: string, level: LogLevel) {
-  let message: string
-  if (typeof info === 'object') {
+function emitLogData(
+  info: LogInfo | string,
+  tag: string,
+  level: LogLevel
+): void {
+  let message = ''
+  if (typeof info === 'object' && info.message !== undefined) {
     message = info.message
-  } else {
+  } else if (typeof info === 'string') {
     message = info
   }
 
-  let stack: string
-  if (typeof info === 'object' && info.stack) {
-    stack = info.stack
+  const data: LogData = { tag, level, message }
+
+  if (typeof info === 'object' && info.stack !== undefined) {
+    data.stack = info.stack
   } else if (level <= LogLevel.error) {
     const error = new Error()
-    // Remove the first three lines of the stack trace which
-    // are not useful (see issue #3)
-    const lines = error.stack.split('\n')
-    stack = [lines[0], ...lines.slice(3)].join('\n')
+    if (error.stack !== undefined) {
+      // Remove the first three lines of the stack trace which
+      // are not useful (see issue #3)
+      const lines = error.stack.split('\n')
+      data.stack = [lines[0], ...lines.slice(3)].join('\n')
+    }
   }
-
-  const data: LogData = { tag, level, message, stack }
 
   // @ts-ignore
   process.emit(LOG_EVENT_NAME, data)
@@ -67,8 +72,8 @@ function emitLogData(info: LogInfo | string, tag: string, level: LogLevel) {
  *
  * @param handler A function that handles the log data
  */
-export function addHandler(handler?: LogHandler) {
-  handler = handler || defaultHandler
+export function addHandler(handler?: LogHandler): void {
+  handler = handler !== undefined ? handler : defaultHandler
   // @ts-ignore
   process.addListener(LOG_EVENT_NAME, handler)
 }
@@ -78,15 +83,15 @@ export function addHandler(handler?: LogHandler) {
  *
  * @param handler Handler to remove
  */
-export function removeHandler(handler?: LogHandler) {
-  handler = handler || defaultHandler
+export function removeHandler(handler?: LogHandler): void {
+  handler = handler !== undefined ? handler : defaultHandler
   process.removeListener(LOG_EVENT_NAME, handler)
 }
 
 /**
  * Remove all handlers.
  */
-export function removeHandlers() {
+export function removeHandlers(): void {
   process.removeAllListeners(LOG_EVENT_NAME)
 }
 
@@ -97,7 +102,7 @@ export function removeHandlers() {
  * replace the default handler with a new one which logs
  * to the console.
  */
-export function replaceHandlers(handler: LogHandler) {
+export function replaceHandlers(handler: LogHandler): void {
   removeHandlers()
   addHandler(handler)
 }
@@ -126,37 +131,35 @@ export function defaultHandler(
       duration?: number
     }
   }
-) {
+): void {
+  const { tag, level, message, stack } = data
+
   // Skip if greater than desired reporting level
-  const level =
+  const maxLevel =
     options !== undefined && options.level !== undefined
       ? options.level
       : LogLevel.info
-  if (data.level > level) return
+  if (level > maxLevel) return
 
   // Skip if within throttling duration for the event signature
   const throttle = options !== undefined ? options.throttle : undefined
   if (throttle !== undefined) {
-    const signature = throttle.signature !== undefined
-        ? throttle.signature
-        : ''
+    const signature = throttle.signature !== undefined ? throttle.signature : ''
     const eventSignature = signature
-      .replace(/\${tag}/, data.tag)
-      .replace(/\${level}/, data.level.toString())
-      .replace(/\${message}/, data.message)
+      .replace(/\${tag}/, tag)
+      .replace(/\${level}/, level.toString())
+      .replace(/\${message}/, message)
     const lastTime = defaultHandlerHistory.get(eventSignature)
     if (lastTime !== undefined) {
-      const duration = throttle.duration !== undefined
-          ? throttle.duration
-          : 1000
-      if ((Date.now() - lastTime) < duration) return
+      const duration =
+        throttle.duration !== undefined ? throttle.duration : 1000
+      if (Date.now() - lastTime < duration) return
     }
     defaultHandlerHistory.set(eventSignature, Date.now())
   }
 
-  let entry
-  if (process.stderr.isTTY) {
-    const { tag, level, message, stack } = data
+  let entry = ''
+  if (process.stderr.isTTY === true) {
     const index = level < 0 ? 0 : level > 3 ? 3 : level
     const label = LogLevel[index].toUpperCase().padEnd(5, ' ')
     const emoji = [
@@ -174,7 +177,7 @@ export function defaultHandler(
     const cyan = '\u001b[36m'
     const reset = '\u001b[0m'
     entry = `${emoji} ${colour}${label}${reset} ${cyan}${tag}${reset} ${message}`
-    if (entry.stack) entry += '\n  ' + stack
+    if (stack !== undefined) entry += '\n  ' + stack
   } else {
     entry = JSON.stringify({ time: new Date().toISOString(), ...data })
   }
@@ -183,7 +186,7 @@ export function defaultHandler(
 
 // Enable the default handler if there no other handler
 // already enabled e.g. by another package using `logga`
-if (!process.listenerCount(LOG_EVENT_NAME)) addHandler(defaultHandler)
+if (process.listenerCount(LOG_EVENT_NAME) === 0) addHandler(defaultHandler)
 
 /**
  * Get a logger for the specific application or package.
@@ -193,6 +196,7 @@ if (!process.listenerCount(LOG_EVENT_NAME)) addHandler(defaultHandler)
  *
  * @param tag The unique application or package name
  */
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function getLogger(tag: string) {
   return {
     error(message: string | LogInfo) {

@@ -13,7 +13,7 @@ test('logging', () => {
   const TAG = 'tests:logging'
   const log = getLogger(TAG)
 
-  let events: LogData[] = []
+  const events: LogData[] = []
   addHandler(data => events.push(data))
 
   log.debug('a debug message')
@@ -40,6 +40,7 @@ test('logging', () => {
   expect(events[3].level).toBe(LogLevel.error)
   expect(events[3].stack).toMatch(/^Error:/)
   // Second line (first call stack) in stack trace should be this file
+  // @ts-ignore
   expect(events[3].stack.split('\n')[1]).toMatch(/logga\/index\.test\.ts/)
 })
 
@@ -81,17 +82,17 @@ test('adding and removing handlers', () => {
   const consoleErrorCalls = consoleError.mock.calls.length
   const events: LogData[] = []
 
-  const first = data => events.push(data)
+  const first = (data: LogData) => events.push(data)
   replaceHandlers(first)
   log.info('')
   expect(events.length).toBe(1)
 
-  const second = data => events.push(data)
+  const second = (data: LogData) => events.push(data)
   addHandler(second)
   log.info('')
   expect(events.length).toBe(3)
 
-  const third = data => events.push(data)
+  const third = (data: LogData) => events.push(data)
   addHandler(third)
   log.info('')
   expect(events.length).toBe(6)
@@ -136,7 +137,11 @@ test('defaultHandler:throttle', async () => {
   const consoleError = jest.spyOn(console, 'error')
   const callsStart = consoleError.mock.calls.length
 
-  replaceHandlers(data => defaultHandler(data, { throttle: { signature: '${message}', duration: 200 } }))
+  replaceHandlers(data =>
+    defaultHandler(data, {
+      throttle: { signature: '${message}', duration: 200 }
+    })
+  )
 
   log.error('a message')
   expect(consoleError.mock.calls.length).toBe(callsStart + 1)
@@ -144,7 +149,7 @@ test('defaultHandler:throttle', async () => {
   log.error('a message')
   expect(consoleError.mock.calls.length).toBe(callsStart + 1)
 
-  await (new Promise(resolve => setTimeout(resolve, 300)))
+  await new Promise(resolve => setTimeout(resolve, 300))
 
   log.error('a message')
   expect(consoleError.mock.calls.length).toBe(callsStart + 2)
@@ -154,4 +159,3 @@ test('defaultHandler:throttle', async () => {
 
   removeHandlers()
 })
-

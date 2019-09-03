@@ -9,7 +9,7 @@
   ],
   "scripts": {
     "format": "npx prettier --write './**/*.{md,ts}'",
-    "lint": "eslint 'src/**/*.{ts,js}' --fix",
+    "lint": "eslint 'index.ts' --fix",
     "test": "jest --runInBand",
     "test:cover": "jest  --runInBand --collectCoverage",
     "build": "tsc index.ts --outDir dist --declaration"
