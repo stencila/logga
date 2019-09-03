@@ -102,6 +102,8 @@ export function replaceHandlers(handler: LogHandler) {
   addHandler(handler)
 }
 
+const defaultHandlerHistory = new Map<string, number>()
+
 /**
  * Default log data handler.
  *
@@ -111,8 +113,47 @@ export function replaceHandlers(handler: LogHandler) {
  * - as JSON if stderr is not TTY (for machine consumption e.g. log files)
  *
  * @param data The log data to handle
+ * @param level The maximum log level to print. Defaults to `info`
+ * @param throttle.signature The log event signature to use for throttling. Defaults to '' (i.e. all events)
+ * @param throttle.duration The duration for throttling (milliseconds). Defaults to 1000ms
  */
-export function defaultHandler(data: LogData) {
+export function defaultHandler(
+  data: LogData,
+  options?: {
+    level?: LogLevel
+    throttle?: {
+      signature?: string
+      duration?: number
+    }
+  }
+) {
+  // Skip if greater than desired reporting level
+  const level =
+    options !== undefined && options.level !== undefined
+      ? options.level
+      : LogLevel.info
+  if (data.level > level) return
+
+  // Skip if within throttling duration for the event signature
+  const throttle = options !== undefined ? options.throttle : undefined
+  if (throttle !== undefined) {
+    const signature = throttle.signature !== undefined
+        ? throttle.signature
+        : ''
+    const eventSignature = signature
+      .replace(/\${tag}/, data.tag)
+      .replace(/\${level}/, data.level.toString())
+      .replace(/\${message}/, data.message)
+    const lastTime = defaultHandlerHistory.get(eventSignature)
+    if (lastTime !== undefined) {
+      const duration = throttle.duration !== undefined
+          ? throttle.duration
+          : 1000
+      if ((Date.now() - lastTime) < duration) return
+    }
+    defaultHandlerHistory.set(eventSignature, Date.now())
+  }
+
   let entry
   if (process.stderr.isTTY) {
     const { tag, level, message, stack } = data
@@ -133,7 +174,7 @@ export function defaultHandler(data: LogData) {
     const cyan = '\u001b[36m'
     const reset = '\u001b[0m'
     entry = `${emoji} ${colour}${label}${reset} ${cyan}${tag}${reset} ${message}`
-    if (level === LogLevel.error) entry += '\n  ' + stack
+    if (entry.stack) entry += '\n  ' + stack
   } else {
     entry = JSON.stringify({ time: new Date().toISOString(), ...data })
   }

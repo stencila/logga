@@ -5,7 +5,8 @@ import {
   LogLevel,
   removeHandler,
   removeHandlers,
-  replaceHandlers
+  replaceHandlers,
+  defaultHandler
 } from './index'
 
 test('logging', () => {
@@ -40,7 +41,6 @@ test('logging', () => {
   expect(events[3].stack).toMatch(/^Error:/)
   // Second line (first call stack) in stack trace should be this file
   expect(events[3].stack.split('\n')[1]).toMatch(/logga\/index\.test\.ts/)
-
 })
 
 test('TTY', () => {
@@ -108,3 +108,50 @@ test('adding and removing handlers', () => {
   // no more logging to console
   expect(consoleError.mock.calls.length).toBe(consoleErrorCalls)
 })
+
+test('defaultHandler:level', () => {
+  const log = getLogger('logger')
+
+  const consoleError = jest.spyOn(console, 'error')
+  const callsStart = consoleError.mock.calls.length
+
+  log.debug('a debug message')
+  expect(consoleError.mock.calls.length).toBe(callsStart + 0)
+
+  replaceHandlers(data => defaultHandler(data, { level: LogLevel.debug }))
+  log.debug('a debug message')
+  expect(consoleError.mock.calls.length).toBe(callsStart + 1)
+
+  replaceHandlers(data => defaultHandler(data, { level: LogLevel.warn }))
+  log.debug('a debug message')
+  log.warn('a warn message')
+  expect(consoleError.mock.calls.length).toBe(callsStart + 2)
+
+  removeHandlers()
+})
+
+test('defaultHandler:throttle', async () => {
+  const log = getLogger('logger')
+
+  const consoleError = jest.spyOn(console, 'error')
+  const callsStart = consoleError.mock.calls.length
+
+  replaceHandlers(data => defaultHandler(data, { throttle: { signature: '${message}', duration: 200 } }))
+
+  log.error('a message')
+  expect(consoleError.mock.calls.length).toBe(callsStart + 1)
+
+  log.error('a message')
+  expect(consoleError.mock.calls.length).toBe(callsStart + 1)
+
+  await (new Promise(resolve => setTimeout(resolve, 300)))
+
+  log.error('a message')
+  expect(consoleError.mock.calls.length).toBe(callsStart + 2)
+
+  log.error('a different message')
+  expect(consoleError.mock.calls.length).toBe(callsStart + 3)
+
+  removeHandlers()
+})
+
