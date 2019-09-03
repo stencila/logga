@@ -73,13 +73,13 @@ const logger = getLogger('encoda')
 ```javascript
 // Handle the log messages in application code
 addHandler((data: LogData) => {
-    // Send off to log output function
-    winstonLogger.log(LogLevel[data.level], data.message);
-    
-    // or filter on tag
-    if (data.tag === 'encoda') {
-        // do something different
-    }
+  // Send off to log output function
+  winstonLogger.log(LogLevel[data.level], data.message)
+
+  // or filter on tag
+  if (data.tag === 'encoda') {
+    // do something different
+  }
 })
 ```
 
