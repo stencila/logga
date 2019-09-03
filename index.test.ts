@@ -20,9 +20,7 @@ test('logging', () => {
   expect(events[0].tag).toBe(TAG)
   expect(events[0].level).toBe(LogLevel.debug)
   expect(events[0].message).toBe('a debug message')
-  expect(events[0].stack).toMatch(/^Error:/)
-  // Second line (first call stack) in stack trace should be this file
-  expect(events[0].stack.split('\n')[1]).toMatch(/logga\/index\.test\.ts/)
+  expect(events[0].stack).toBeUndefined()
 
   log.info({
     message: 'an info message',
@@ -39,6 +37,10 @@ test('logging', () => {
 
   log.error('an error message')
   expect(events[3].level).toBe(LogLevel.error)
+  expect(events[3].stack).toMatch(/^Error:/)
+  // Second line (first call stack) in stack trace should be this file
+  expect(events[3].stack.split('\n')[1]).toMatch(/logga\/index\.test\.ts/)
+
 })
 
 test('TTY', () => {

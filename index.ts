@@ -30,7 +30,8 @@ export interface LogHandler {
  * Take a message `string`, or `LogInfo` object,
  * and emit an event with a `LogData` object.
  *
- * If `LogData` does not have a stack attached, one is generated and set on the `LogData`.
+ * For `LogLevel.error`, if `LogInfo` does not have a `stack`,
+ * one is generated and set on the `LogData`.
  *
  * @param info
  * @param level
@@ -46,7 +47,7 @@ function emitLogData(info: LogInfo | string, tag: string, level: LogLevel) {
   let stack: string
   if (typeof info === 'object' && info.stack) {
     stack = info.stack
-  } else {
+  } else if (level <= LogLevel.error) {
     const error = new Error()
     // Remove the first three lines of the stack trace which
     // are not useful (see issue #3)
