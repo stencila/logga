@@ -1,3 +1,15 @@
+# [1.3.0](https://github.com/stencila/logga/compare/v1.2.1...v1.3.0) (2019-09-03)
+
+
+### Bug Fixes
+
+* **Emit:** Only attach stack to errors ([9ef7b84](https://github.com/stencila/logga/commit/9ef7b84))
+
+
+### Features
+
+* **Throttling:** Allow for throttling of events in handler ([b11633a](https://github.com/stencila/logga/commit/b11633a))
+
 ## [1.2.1](https://github.com/stencila/logga/compare/v1.2.0...v1.2.1) (2019-07-03)
 
 
