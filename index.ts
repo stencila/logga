@@ -26,6 +26,7 @@ if (typeof process !== 'undefined') {
     removeAllListeners: process.removeAllListeners
   }
 }
+/* istanbul ignore next */
 if (typeof window !== 'undefined') {
   /**
    * To mimic the Node event API in the browser it is necessary to:
@@ -248,6 +249,7 @@ export function defaultHandler(
   } else {
     const index = level < 0 ? 0 : level > 3 ? 3 : level
     const label = LogLevel[index].toUpperCase().padEnd(5, ' ')
+    /* istanbul ignore next */
     if (typeof window !== 'undefined') {
       entry = `${label} ${tag} ${message}`
     } else {
