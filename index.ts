@@ -60,7 +60,7 @@ if (typeof window !== 'undefined') {
       listeners.delete(handler)
     },
     removeAllListeners: (event: string) => {
-      Array.from(listeners.values()).map(() => {
+      Array.from(listeners.values()).map(listener => {
         // @ts-ignore
         window.removeEventListener(event, listener)
       })
