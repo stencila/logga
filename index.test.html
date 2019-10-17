@@ -5,9 +5,46 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <title>Logga browser test</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <script src="./dist/browser/index.js"></script>
+    <script src="./dist/browser.js"></script>
   </head>
   <body>
-    <script></script>
+    <style>
+      div {
+        position: relative;
+        max-width: 20rem;
+        margin: 1rem auto;
+        padding: 1rem;
+        border: 1px solid #ddd;
+        border-radius: 3px;
+      }
+      div::after {
+        content: '❌';
+        position: absolute;
+        top: 2px;
+        right: 5px;
+      }
+    </style>
+    <script>
+      const log = logga.getLogger('test:browser')
+
+      // Defaults to output to the developer console
+      log.info('This info should be in the console')
+      log.warn('This warning should be in the console')
+      log.error('This error should be in the console')
+
+      // Also send to an alert dialog
+      logga.addHandler(({message}) => alert(message))
+      log.warn('This warning should be in an alert (and in the console)')
+
+      // Instead, handle log events with simple "toasts"
+      logga.replaceHandlers(({level, message}) => {
+        const elem = document.createElement('div')
+        elem.innerHTML = message
+        elem.onclick = event => document.body.removeChild(event.target)
+        document.body.appendChild(elem)
+      })
+      log.info('This info should be in the document (and not in the console, or in an alert)')
+      setTimeout(() => log.warn('Same for this warning'), 2000)
+    </script>
   </body>
 </html>

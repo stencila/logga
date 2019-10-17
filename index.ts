@@ -236,28 +236,38 @@ export function defaultHandler(
     defaultHandlerHistory.set(eventSignature, Date.now())
   }
 
+  // Generate a human readable or machine readable log entry based on
+  // environment
   let entry = ''
-  if (process.stderr.isTTY === true) {
+  if (
+    typeof process !== 'undefined' &&
+    process.stderr !== undefined &&
+    process.stderr.isTTY !== true
+  ) {
+    entry = JSON.stringify({ time: new Date().toISOString(), ...data })
+  } else {
     const index = level < 0 ? 0 : level > 3 ? 3 : level
     const label = LogLevel[index].toUpperCase().padEnd(5, ' ')
-    const emoji = [
-      '🚨', // error
-      '⚠', // warn
-      '🛈', // info
-      '🐛' // debug
-    ][index]
-    const colour = [
-      '\u001b[31;1m', // red
-      '\u001b[33;1m', // yellow
-      '\u001b[34;1m', // blue
-      '\u001b[30;1m' // grey (bright black)
-    ][index]
-    const cyan = '\u001b[36m'
-    const reset = '\u001b[0m'
-    entry = `${emoji} ${colour}${label}${reset} ${cyan}${tag}${reset} ${message}`
+    if (typeof window !== 'undefined') {
+      entry = `${label} ${tag} ${message}`
+    } else {
+      const emoji = [
+        '🚨', // error
+        '⚠', // warn
+        '🛈', // info
+        '🐛' // debug
+      ][index]
+      const colour = [
+        '\u001b[31;1m', // red
+        '\u001b[33;1m', // yellow
+        '\u001b[34;1m', // blue
+        '\u001b[30;1m' // grey (bright black)
+      ][index]
+      const cyan = '\u001b[36m'
+      const reset = '\u001b[0m'
+      entry = `${emoji} ${colour}${label}${reset} ${cyan}${tag}${reset} ${message}`
+    }
     if (stack !== undefined) entry += '\n  ' + stack
-  } else {
-    entry = JSON.stringify({ time: new Date().toISOString(), ...data })
   }
   console.error(entry)
 }

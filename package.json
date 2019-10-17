@@ -18,7 +18,7 @@
     "test": "jest --runInBand",
     "test:cover": "jest  --runInBand --collectCoverage",
     "test:browser": "jest --env=jsdom",
-    "build": "tsc && parcel build index.ts -d dist/browser --public-url ."
+    "build": "tsc && parcel build index.ts -d dist/browser --public-url . --global logga"
   },
   "repository": {
     "type": "git",
