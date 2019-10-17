@@ -1,0 +1,15 @@
+{
+  "extends": "@stencila/dev-config/tsconfig.json",
+  "compilerOptions": {
+    /* ECMAScript target version and module type for browser compatability */
+    "target": "es5",
+    "module": "es2015",
+    /* When creating non-commonjs modules this seems to be necessary */
+    "moduleResolution": "node",
+    /* Redirect output files to different dist folder */
+    "outDir": "./dist/browser",
+    /* No need to generate mtype declarations */
+    "declaration": false
+  },
+  "files": ["index.ts"]
+}

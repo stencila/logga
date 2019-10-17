@@ -4,6 +4,7 @@
   "description": "Unified logging across related Javascript modules",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "browser": "dist/browser/index.js",
   "files": [
     "/dist"
   ],
@@ -12,7 +13,8 @@
     "lint": "eslint 'index.ts' --fix",
     "test": "jest --runInBand",
     "test:cover": "jest  --runInBand --collectCoverage",
-    "build": "tsc index.ts --outDir dist --declaration"
+    "test:browser": "jest --env=jsdom",
+    "build": "tsc && tsc -p tsconfig.browser.json"
   },
   "repository": {
     "type": "git",
