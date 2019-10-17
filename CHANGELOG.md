@@ -1,3 +1,15 @@
+# [1.4.0](https://github.com/stencila/logga/compare/v1.3.0...v1.4.0) (2019-10-17)
+
+
+### Bug Fixes
+
+* Add missing argument ([ba36d3e](https://github.com/stencila/logga/commit/ba36d3e))
+
+
+### Features
+
+* **Browser:** Enable running in browser ([6664f68](https://github.com/stencila/logga/commit/6664f68))
+
 # [1.3.0](https://github.com/stencila/logga/compare/v1.2.1...v1.3.0) (2019-09-03)
 
 
