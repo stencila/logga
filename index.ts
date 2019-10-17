@@ -1,4 +1,74 @@
-const LOG_EVENT_NAME = Symbol('stencila:logga')
+/* global CustomEvent */
+
+const LOG_EVENT_NAME = 'stencila:logga'
+
+/**
+ * The global log event bus from which all events are emitted
+ * and handlers are attached.
+ *
+ * When in Node, exposes the event API of Node `process`.
+ * When in a browser, creates adaptor functions to mimic the
+ * Node API using `window` event handling functions.
+ */
+let bus: {
+  emit: (event: string, data: LogData) => void
+  listeners: (event: string) => LogHandler[]
+  addListener: (event: string, handler: LogHandler) => void
+  removeListener: (event: string, handler: LogHandler) => void
+  removeAllListeners: (event: string) => void
+}
+if (typeof process !== 'undefined') {
+  bus = {
+    emit: process.emit as typeof bus.emit,
+    listeners: process.listeners as typeof bus.listeners,
+    addListener: process.addListener as typeof bus.addListener,
+    removeListener: process.removeListener,
+    removeAllListeners: process.removeAllListeners
+  }
+}
+/* istanbul ignore next */
+if (typeof window !== 'undefined') {
+  /**
+   * To mimic the Node event API in the browser it is necessary to:
+   *
+   * - wrap `LogData` in a `CustomEvent` when emitting an event and
+   *   unwrap it when handling an event
+   * - maintain a list of event listeners (`window` does not expose
+   *   that for us)
+   * - use a map of handlers to listeners so that we can remove them
+   */
+  type CustomEventListener = (customEvent: CustomEvent<LogData>) => void
+  const listeners = new Map<LogHandler, CustomEventListener>()
+  bus = {
+    emit: (event: string, data: LogData) => {
+      window.dispatchEvent(new CustomEvent<LogData>(event, { detail: data }))
+    },
+    listeners: () => {
+      return Array.from(listeners.keys())
+    },
+    addListener: (event: string, handler: LogHandler) => {
+      const listener = (customEvent: CustomEvent<LogData>): void =>
+        handler(customEvent.detail)
+      // @ts-ignore
+      window.addEventListener(event, listener)
+      listeners.set(handler, listener)
+    },
+    removeListener: (event: string, handler: LogHandler) => {
+      const listener = listeners.get(handler)
+      if (listener === undefined) return
+      // @ts-ignore
+      window.removeEventListener(event, listener)
+      listeners.delete(handler)
+    },
+    removeAllListeners: (event: string) => {
+      Array.from(listeners.values()).map(listener => {
+        // @ts-ignore
+        window.removeEventListener(event, listener)
+      })
+      listeners.clear()
+    }
+  }
+}
 
 export enum LogLevel {
   error = 0,
@@ -61,38 +131,47 @@ function emitLogData(
       data.stack = [lines[0], ...lines.slice(3)].join('\n')
     }
   }
-
-  // @ts-ignore
-  process.emit(LOG_EVENT_NAME, data)
+  bus.emit(LOG_EVENT_NAME, data)
 }
 
 /**
- * To decouple the listener from sender implementation, clients should use
- * this function to set up a listener.
+ * Get all handlers.
+ */
+export function handlers(): LogHandler[] {
+  return bus.listeners(LOG_EVENT_NAME)
+}
+
+/**
+ * Add a handler.
  *
  * @param handler A function that handles the log data
  */
 export function addHandler(handler?: LogHandler): void {
-  handler = handler !== undefined ? handler : defaultHandler
-  // @ts-ignore
-  process.addListener(LOG_EVENT_NAME, handler)
+  bus.addListener(
+    LOG_EVENT_NAME,
+    handler !== undefined ? handler : defaultHandler
+  )
 }
 
 /**
  * Remove a handler.
  *
+ * Due to how handlers are wrapped
+ *
  * @param handler Handler to remove
  */
 export function removeHandler(handler?: LogHandler): void {
-  handler = handler !== undefined ? handler : defaultHandler
-  process.removeListener(LOG_EVENT_NAME, handler)
+  bus.removeListener(
+    LOG_EVENT_NAME,
+    handler !== undefined ? handler : defaultHandler
+  )
 }
 
 /**
  * Remove all handlers.
  */
 export function removeHandlers(): void {
-  process.removeAllListeners(LOG_EVENT_NAME)
+  bus.removeAllListeners(LOG_EVENT_NAME)
 }
 
 /**
@@ -158,35 +237,46 @@ export function defaultHandler(
     defaultHandlerHistory.set(eventSignature, Date.now())
   }
 
+  // Generate a human readable or machine readable log entry based on
+  // environment
   let entry = ''
-  if (process.stderr.isTTY === true) {
+  if (
+    typeof process !== 'undefined' &&
+    process.stderr !== undefined &&
+    process.stderr.isTTY !== true
+  ) {
+    entry = JSON.stringify({ time: new Date().toISOString(), ...data })
+  } else {
     const index = level < 0 ? 0 : level > 3 ? 3 : level
     const label = LogLevel[index].toUpperCase().padEnd(5, ' ')
-    const emoji = [
-      '🚨', // error
-      '⚠', // warn
-      '🛈', // info
-      '🐛' // debug
-    ][index]
-    const colour = [
-      '\u001b[31;1m', // red
-      '\u001b[33;1m', // yellow
-      '\u001b[34;1m', // blue
-      '\u001b[30;1m' // grey (bright black)
-    ][index]
-    const cyan = '\u001b[36m'
-    const reset = '\u001b[0m'
-    entry = `${emoji} ${colour}${label}${reset} ${cyan}${tag}${reset} ${message}`
+    /* istanbul ignore next */
+    if (typeof window !== 'undefined') {
+      entry = `${label} ${tag} ${message}`
+    } else {
+      const emoji = [
+        '🚨', // error
+        '⚠', // warn
+        '🛈', // info
+        '🐛' // debug
+      ][index]
+      const colour = [
+        '\u001b[31;1m', // red
+        '\u001b[33;1m', // yellow
+        '\u001b[34;1m', // blue
+        '\u001b[30;1m' // grey (bright black)
+      ][index]
+      const cyan = '\u001b[36m'
+      const reset = '\u001b[0m'
+      entry = `${emoji} ${colour}${label}${reset} ${cyan}${tag}${reset} ${message}`
+    }
     if (stack !== undefined) entry += '\n  ' + stack
-  } else {
-    entry = JSON.stringify({ time: new Date().toISOString(), ...data })
   }
   console.error(entry)
 }
 
 // Enable the default handler if there no other handler
 // already enabled e.g. by another package using `logga`
-if (process.listenerCount(LOG_EVENT_NAME) === 0) addHandler(defaultHandler)
+if (handlers().length === 0) addHandler(defaultHandler)
 
 /**
  * Get a logger for the specific application or package.

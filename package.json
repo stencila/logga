@@ -2,8 +2,13 @@
   "name": "@stencila/logga",
   "version": "1.3.0",
   "description": "Unified logging across related Javascript modules",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "dist/lib/index.js",
+  "types": "dist/lib/index.d.ts",
+  "browser": "dist/browser/index.js",
+  "browserslist": [
+    "> 0.2%",
+    "not dead"
+  ],
   "files": [
     "/dist"
   ],
@@ -12,7 +17,8 @@
     "lint": "eslint 'index.ts' --fix",
     "test": "jest --runInBand",
     "test:cover": "jest  --runInBand --collectCoverage",
-    "build": "tsc index.ts --outDir dist --declaration"
+    "test:browser": "jest --env=jsdom",
+    "build": "tsc && parcel build index.ts -d dist/browser --public-url . --global logga"
   },
   "repository": {
     "type": "git",
@@ -31,6 +37,7 @@
     "@stencila/dev-config": "1.1.3",
     "@types/jest": "24.0.18",
     "jest": "24.9.0",
+    "parcel": "^1.12.4",
     "ts-jest": "24.0.2",
     "typescript": "3.6.2"
   },

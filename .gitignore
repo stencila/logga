@@ -2,3 +2,5 @@
 /coverage
 /dist
 /log.json
+/.cache
+.DS_Store
