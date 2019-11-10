@@ -1,3 +1,10 @@
+## [1.4.1](https://github.com/stencila/logga/compare/v1.4.0...v1.4.1) (2019-11-10)
+
+
+### Bug Fixes
+
+* **Package:** Remove browser property of package.json ([fe7a7d8](https://github.com/stencila/logga/commit/fe7a7d8))
+
 # [1.4.0](https://github.com/stencila/logga/compare/v1.3.0...v1.4.0) (2019-10-17)
 
 
