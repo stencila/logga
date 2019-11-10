@@ -4,7 +4,6 @@
   "description": "Unified logging across related Javascript modules",
   "main": "dist/lib/index.js",
   "types": "dist/lib/index.d.ts",
-  "browser": "dist/browser/index.js",
   "browserslist": [
     "> 0.2%",
     "not dead"
@@ -18,7 +17,7 @@
     "test": "jest --runInBand",
     "test:cover": "jest  --runInBand --collectCoverage",
     "test:browser": "jest --env=jsdom",
-    "build": "tsc && parcel build index.ts -d dist/browser --public-url . --global logga"
+    "build": "tsc && parcel build index.ts --out-dir dist/browser --global logga"
   },
   "repository": {
     "type": "git",
