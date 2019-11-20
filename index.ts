@@ -148,21 +148,19 @@ export function handlers(): LogHandler[] {
 /**
  * Add a handler.
  *
- * @param handler A function that handles the log data
+ * @param handler A function that handles the log data. Defaults to `defaultHandler`.
+ * @returns The handler function that was added.
  */
-export function addHandler(handler?: LogHandler): void {
-  bus.addListener(
-    LOG_EVENT_NAME,
-    handler !== undefined ? handler : defaultHandler
-  )
+export function addHandler(handler?: LogHandler): LogHandler {
+  if (handler === undefined) handler = defaultHandler
+  bus.addListener(LOG_EVENT_NAME, handler)
+  return handler
 }
 
 /**
  * Remove a handler.
  *
- * Due to how handlers are wrapped
- *
- * @param handler Handler to remove
+ * @param handler The handler function to remove. Defaults to `defaultHandler`.
  */
 export function removeHandler(handler?: LogHandler): void {
   bus.removeListener(

@@ -82,6 +82,8 @@ test('adding and removing handlers', () => {
   const consoleErrorCalls = consoleError.mock.calls.length
   const events: LogData[] = []
 
+  // Add and remove handlers using different APIs...
+
   const first = (data: LogData) => events.push(data)
   replaceHandlers(first)
   log.info('')
@@ -92,8 +94,7 @@ test('adding and removing handlers', () => {
   log.info('')
   expect(events.length).toBe(3)
 
-  const third = (data: LogData) => events.push(data)
-  addHandler(third)
+  const third = addHandler((data: LogData) => events.push(data))
   log.info('')
   expect(events.length).toBe(6)
 
