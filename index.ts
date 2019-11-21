@@ -19,11 +19,13 @@ let bus: {
 }
 if (typeof process !== 'undefined') {
   bus = {
+    /* eslint-disable @typescript-eslint/unbound-method */
     emit: process.emit as typeof bus.emit,
     listeners: process.listeners as typeof bus.listeners,
     addListener: process.addListener as typeof bus.addListener,
     removeListener: process.removeListener,
     removeAllListeners: process.removeAllListeners
+    /* eslint-enable @typescript-eslint/unbound-method */
   }
 }
 /* istanbul ignore next */
@@ -41,7 +43,9 @@ if (typeof window !== 'undefined') {
   const listeners = new Map<LogHandler, CustomEventListener>()
   bus = {
     emit: (event: string, data: LogData) => {
-      window.dispatchEvent(new CustomEvent<LogData>(event, { detail: data }))
+      window.dispatchEvent(
+        new CustomEvent<LogData>(event, { detail: data })
+      )
     },
     listeners: () => {
       return Array.from(listeners.keys())
