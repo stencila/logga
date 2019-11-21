@@ -225,14 +225,14 @@ const defaultHandlerHistory = new Map<string, number>()
  * - as JSON if stderr is not TTY (for machine consumption e.g. log files)
  *
  * @param data The log data to handle
- * @param level The maximum log level to print. Defaults to `info`
- * @param throttle.signature The log event signature to use for throttling. Defaults to '' (i.e. all events)
- * @param throttle.duration The duration for throttling (milliseconds). Defaults to 1000ms
+ * @param options.maxLevel The maximum log level to print. Defaults to `info`
+ * @param options.throttle.signature The log event signature to use for throttling. Defaults to '' (i.e. all events)
+ * @param options.throttle.duration The duration for throttling (milliseconds). Defaults to 1000ms
  */
 export function defaultHandler(
   data: LogData,
   options?: {
-    level?: LogLevel
+    maxLevel?: LogLevel
     throttle?: {
       signature?: string
       duration?: number
@@ -243,8 +243,8 @@ export function defaultHandler(
 
   // Skip if greater than desired reporting level
   const maxLevel =
-    options !== undefined && options.level !== undefined
-      ? options.level
+    options !== undefined && options.maxLevel !== undefined
+      ? options.maxLevel
       : LogLevel.info
   if (level > maxLevel) return
 

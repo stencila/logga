@@ -173,7 +173,7 @@ test('adding a handler with filter options', () => {
   removeHandler(handler6)
 })
 
-test('defaultHandler:level', () => {
+test('defaultHandler:maxLevel', () => {
   const log = getLogger('logger')
 
   const consoleError = jest.spyOn(console, 'error')
@@ -182,11 +182,11 @@ test('defaultHandler:level', () => {
   log.debug('a debug message')
   expect(consoleError.mock.calls.length).toBe(callsStart + 0)
 
-  replaceHandlers(data => defaultHandler(data, { level: LogLevel.debug }))
+  replaceHandlers(data => defaultHandler(data, { maxLevel: LogLevel.debug }))
   log.debug('a debug message')
   expect(consoleError.mock.calls.length).toBe(callsStart + 1)
 
-  replaceHandlers(data => defaultHandler(data, { level: LogLevel.warn }))
+  replaceHandlers(data => defaultHandler(data, { maxLevel: LogLevel.warn }))
   log.debug('a debug message')
   log.warn('a warn message')
   expect(consoleError.mock.calls.length).toBe(callsStart + 2)
