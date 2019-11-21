@@ -148,25 +148,51 @@ export function handlers(): LogHandler[] {
 /**
  * Add a handler.
  *
- * @param handler A function that handles the log data. Defaults to `defaultHandler`.
+ * @param handler A function that handles the log data.
+ * @param filter Options for filtering log data prior to sending to the handler.
+ * @param filter.tags A list of tags that the log data should match.
+ * @param filter.maxLevel The maximum log level.
+ * @param filter.messageRegex A regex that the log level should match.
+ * @param filter.func A function that determines if handler is called
  * @returns The handler function that was added.
  */
-export function addHandler(handler?: LogHandler): LogHandler {
-  if (handler === undefined) handler = defaultHandler
-  bus.addListener(LOG_EVENT_NAME, handler)
-  return handler
+export function addHandler(
+  handler: LogHandler,
+  filter: {
+    tags?: string[]
+    maxLevel?: LogLevel
+    messageRegex?: RegExp
+    func?: (logData: LogData) => boolean
+  } = {}
+): LogHandler {
+  let listener = handler
+  const { tags, maxLevel, messageRegex, func } = filter
+  if (
+    tags !== undefined ||
+    maxLevel !== undefined ||
+    messageRegex !== undefined ||
+    func !== undefined
+  ) {
+    listener = (logData: LogData) => {
+      if (tags !== undefined && !tags.includes(logData.tag)) return
+      if (maxLevel !== undefined && logData.level > maxLevel) return
+      if (messageRegex !== undefined && !messageRegex.test(logData.message))
+        return
+      if (func !== undefined && !func(logData)) return
+      handler(logData)
+    }
+  }
+  bus.addListener(LOG_EVENT_NAME, listener)
+  return listener
 }
 
 /**
  * Remove a handler.
  *
- * @param handler The handler function to remove. Defaults to `defaultHandler`.
+ * @param handler The handler function to remove.
  */
-export function removeHandler(handler?: LogHandler): void {
-  bus.removeListener(
-    LOG_EVENT_NAME,
-    handler !== undefined ? handler : defaultHandler
-  )
+export function removeHandler(handler: LogHandler): void {
+  bus.removeListener(LOG_EVENT_NAME, handler)
 }
 
 /**

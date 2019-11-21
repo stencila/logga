@@ -111,6 +111,68 @@ test('adding and removing handlers', () => {
   expect(consoleError.mock.calls.length).toBe(consoleErrorCalls)
 })
 
+test('adding a handler with filter options', () => {
+  const log1 = getLogger('log1')
+  const log2 = getLogger('log2')
+  removeHandlers()
+
+  let lastMessage
+  const recordMessage = (logData: LogData) => (lastMessage = logData.message)
+
+  // No filter
+  const handler1 = addHandler(recordMessage)
+  log1.debug('A')
+  expect(lastMessage).toBe('A')
+  removeHandler(handler1)
+
+  // tags filter
+  const handler2 = addHandler(recordMessage, { tags: ['log1'] })
+  log1.debug('B')
+  log2.debug('C')
+  expect(lastMessage).toBe('B')
+  removeHandler(handler2)
+
+  // maxLevel filter
+  const handler3 = addHandler(recordMessage, { maxLevel: LogLevel.error })
+  log1.error('D')
+  log1.debug('E')
+  expect(lastMessage).toBe('D')
+  removeHandler(handler3)
+
+  // messageRegex filter
+  const handler4 = addHandler(recordMessage, { messageRegex: /^F$/ })
+  log1.debug('F')
+  log1.debug('f')
+  log1.debug('')
+  log1.debug(' FF')
+  expect(lastMessage).toBe('F')
+  removeHandler(handler4)
+
+  // func filter
+  const handler5 = addHandler(recordMessage, {
+    func: (logData: LogData): boolean =>
+      logData.level === LogLevel.debug && logData.message.startsWith('G')
+  })
+  log1.debug('G')
+  log1.debug('g')
+  log1.error('Goof')
+  expect(lastMessage).toBe('G')
+  removeHandler(handler5)
+
+  // All the filters together
+  const handler6 = addHandler(recordMessage, {
+    tags: ['log2'],
+    maxLevel: LogLevel.warn,
+    messageRegex: /^H/,
+    func: (logData: LogData): boolean => logData.message.endsWith('!')
+  })
+  log2.warn('Hello world!')
+  log2.debug('Help!')
+  log1.error('Hello woof!')
+  expect(lastMessage).toBe('Hello world!')
+  removeHandler(handler6)
+})
+
 test('defaultHandler:level', () => {
   const log = getLogger('logger')
 
