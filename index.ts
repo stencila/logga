@@ -148,27 +148,51 @@ export function handlers(): LogHandler[] {
 /**
  * Add a handler.
  *
- * @param handler A function that handles the log data
+ * @param handler A function that handles the log data.
+ * @param filter Options for filtering log data prior to sending to the handler.
+ * @param filter.tags A list of tags that the log data should match.
+ * @param filter.maxLevel The maximum log level.
+ * @param filter.messageRegex A regex that the log level should match.
+ * @param filter.func A function that determines if handler is called
+ * @returns The handler function that was added.
  */
-export function addHandler(handler?: LogHandler): void {
-  bus.addListener(
-    LOG_EVENT_NAME,
-    handler !== undefined ? handler : defaultHandler
-  )
+export function addHandler(
+  handler: LogHandler,
+  filter: {
+    tags?: string[]
+    maxLevel?: LogLevel
+    messageRegex?: RegExp
+    func?: (logData: LogData) => boolean
+  } = {}
+): LogHandler {
+  let listener = handler
+  const { tags, maxLevel, messageRegex, func } = filter
+  if (
+    tags !== undefined ||
+    maxLevel !== undefined ||
+    messageRegex !== undefined ||
+    func !== undefined
+  ) {
+    listener = (logData: LogData) => {
+      if (tags !== undefined && !tags.includes(logData.tag)) return
+      if (maxLevel !== undefined && logData.level > maxLevel) return
+      if (messageRegex !== undefined && !messageRegex.test(logData.message))
+        return
+      if (func !== undefined && !func(logData)) return
+      handler(logData)
+    }
+  }
+  bus.addListener(LOG_EVENT_NAME, listener)
+  return listener
 }
 
 /**
  * Remove a handler.
  *
- * Due to how handlers are wrapped
- *
- * @param handler Handler to remove
+ * @param handler The handler function to remove.
  */
-export function removeHandler(handler?: LogHandler): void {
-  bus.removeListener(
-    LOG_EVENT_NAME,
-    handler !== undefined ? handler : defaultHandler
-  )
+export function removeHandler(handler: LogHandler): void {
+  bus.removeListener(LOG_EVENT_NAME, handler)
 }
 
 /**
@@ -201,14 +225,14 @@ const defaultHandlerHistory = new Map<string, number>()
  * - as JSON if stderr is not TTY (for machine consumption e.g. log files)
  *
  * @param data The log data to handle
- * @param level The maximum log level to print. Defaults to `info`
- * @param throttle.signature The log event signature to use for throttling. Defaults to '' (i.e. all events)
- * @param throttle.duration The duration for throttling (milliseconds). Defaults to 1000ms
+ * @param options.maxLevel The maximum log level to print. Defaults to `info`
+ * @param options.throttle.signature The log event signature to use for throttling. Defaults to '' (i.e. all events)
+ * @param options.throttle.duration The duration for throttling (milliseconds). Defaults to 1000ms
  */
 export function defaultHandler(
   data: LogData,
   options?: {
-    level?: LogLevel
+    maxLevel?: LogLevel
     throttle?: {
       signature?: string
       duration?: number
@@ -219,8 +243,8 @@ export function defaultHandler(
 
   // Skip if greater than desired reporting level
   const maxLevel =
-    options !== undefined && options.level !== undefined
-      ? options.level
+    options !== undefined && options.maxLevel !== undefined
+      ? options.maxLevel
       : LogLevel.info
   if (level > maxLevel) return
 
