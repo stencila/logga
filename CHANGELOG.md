@@ -1,3 +1,22 @@
+# [2.0.0](https://github.com/stencila/logga/compare/v1.4.1...v2.0.0) (2019-11-21)
+
+
+### Code Refactoring
+
+* **defaultHandler:** Change option name to `maxLevel` ([ca22dec](https://github.com/stencila/logga/commit/ca22dec84c3282369d974deaa311e884f85f8ef7))
+
+
+### Features
+
+* **addHandler:** Allow log event filters to be specified ([0f467b4](https://github.com/stencila/logga/commit/0f467b47676d62b0238b66f31238f1db4024dfd0))
+* **addHandler:** Return the handler that was added. ([322c7d1](https://github.com/stencila/logga/commit/322c7d187ff190fb8841619b00bbb3b1a21d8984))
+
+
+### BREAKING CHANGES
+
+* **defaultHandler:** Made because `level` had caused some confusion amongst users of this library and to be consistent with the same option in `addHandler`.
+* **addHandler:** Handler funtion is no longer optional for either `addHandler` or `removeHandler`. Used to default to `defaultHandler`.
+
 ## [1.4.1](https://github.com/stencila/logga/compare/v1.4.0...v1.4.1) (2019-11-10)
 
 
