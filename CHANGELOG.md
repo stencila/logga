@@ -1,3 +1,10 @@
+# [2.1.0](https://github.com/stencila/logga/compare/v2.0.0...v2.1.0) (2019-12-02)
+
+
+### Features
+
+* **Default handler:** Add showStack option ([0dc246e](https://github.com/stencila/logga/commit/0dc246e05627b9e93363b034dc6e487c7abc855f))
+
 # [2.0.0](https://github.com/stencila/logga/compare/v1.4.1...v2.0.0) (2019-11-21)
 
 
