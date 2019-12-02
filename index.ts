@@ -88,7 +88,7 @@ export enum LogLevel {
  * Information supplied to the logger
  * about a log event.
  */
-export interface LogInfo {
+export interface LogEvent {
   message?: string
   stack?: string
 }
@@ -107,10 +107,10 @@ export interface LogData {
  * A log event emitter
  */
 export interface Logger {
-  error(message: string | LogInfo): void
-  warn(message: string | LogInfo): void
-  info(message: string | LogInfo): void
-  debug(message: string | LogInfo): void
+  error(message: string | LogEvent): void
+  warn(message: string | LogEvent): void
+  info(message: string | LogEvent): void
+  debug(message: string | LogEvent): void
 }
 
 /**
@@ -131,7 +131,7 @@ export interface LogHandler {
  * @param level
  */
 function emitLogData(
-  info: LogInfo | string,
+  info: LogEvent | string,
   tag: string,
   level: LogLevel
 ): void {
@@ -337,16 +337,16 @@ if (handlers().length === 0) addHandler(defaultHandler)
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function getLogger(tag: string): Logger {
   return {
-    error(message: string | LogInfo) {
+    error(message: string | LogEvent) {
       emitLogData(message, tag, LogLevel.error)
     },
-    warn(message: string | LogInfo) {
+    warn(message: string | LogEvent) {
       emitLogData(message, tag, LogLevel.warn)
     },
-    info(message: string | LogInfo) {
+    info(message: string | LogEvent) {
       emitLogData(message, tag, LogLevel.info)
     },
-    debug(message: string | LogInfo) {
+    debug(message: string | LogEvent) {
       emitLogData(message, tag, LogLevel.debug)
     }
   }
