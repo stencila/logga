@@ -74,6 +74,9 @@ if (typeof window !== 'undefined') {
   }
 }
 
+/**
+ * The severity level of a log event.
+ */
 export enum LogLevel {
   error = 0,
   warn,
@@ -81,11 +84,18 @@ export enum LogLevel {
   debug
 }
 
-export interface LogInfo {
+/**
+ * Information supplied to the logger
+ * about a log event.
+ */
+export interface LogEvent {
   message?: string
   stack?: string
 }
 
+/**
+ * Data associated with a log event
+ */
 export interface LogData {
   tag: string
   level: LogLevel
@@ -94,7 +104,17 @@ export interface LogData {
 }
 
 /**
- * A listener for the log event must have this function signature.
+ * A log event emitter
+ */
+export interface Logger {
+  error(message: string | LogEvent): void
+  warn(message: string | LogEvent): void
+  info(message: string | LogEvent): void
+  debug(message: string | LogEvent): void
+}
+
+/**
+ * A log event handler
  */
 export interface LogHandler {
   (data: LogData): void
@@ -111,7 +131,7 @@ export interface LogHandler {
  * @param level
  */
 function emitLogData(
-  info: LogInfo | string,
+  info: LogEvent | string,
   tag: string,
   level: LogLevel
 ): void {
@@ -231,25 +251,23 @@ const defaultHandlerHistory = new Map<string, number>()
  */
 export function defaultHandler(
   data: LogData,
-  options?: {
+  options: {
     maxLevel?: LogLevel
+    showStack?: boolean
     throttle?: {
       signature?: string
       duration?: number
     }
-  }
+  } = {}
 ): void {
   const { tag, level, message, stack } = data
 
   // Skip if greater than desired reporting level
-  const maxLevel =
-    options !== undefined && options.maxLevel !== undefined
-      ? options.maxLevel
-      : LogLevel.info
+  const { maxLevel = LogLevel.info } = options
   if (level > maxLevel) return
 
   // Skip if within throttling duration for the event signature
-  const throttle = options !== undefined ? options.throttle : undefined
+  const { throttle } = options
   if (throttle !== undefined) {
     const signature = throttle.signature !== undefined ? throttle.signature : ''
     const eventSignature = signature
@@ -297,7 +315,9 @@ export function defaultHandler(
       const reset = '\u001b[0m'
       entry = `${emoji} ${colour}${label}${reset} ${cyan}${tag}${reset} ${message}`
     }
-    if (stack !== undefined) entry += '\n  ' + stack
+
+    const { showStack = false } = options
+    if (showStack && stack !== undefined) entry += '\n  ' + stack
   }
   console.error(entry)
 }
@@ -315,18 +335,18 @@ if (handlers().length === 0) addHandler(defaultHandler)
  * @param tag The unique application or package name
  */
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function getLogger(tag: string) {
+export function getLogger(tag: string): Logger {
   return {
-    error(message: string | LogInfo) {
+    error(message: string | LogEvent) {
       emitLogData(message, tag, LogLevel.error)
     },
-    warn(message: string | LogInfo) {
+    warn(message: string | LogEvent) {
       emitLogData(message, tag, LogLevel.warn)
     },
-    info(message: string | LogInfo) {
+    info(message: string | LogEvent) {
       emitLogData(message, tag, LogLevel.info)
     },
-    debug(message: string | LogInfo) {
+    debug(message: string | LogEvent) {
       emitLogData(message, tag, LogLevel.debug)
     }
   }
