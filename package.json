@@ -17,7 +17,8 @@
     "test": "jest --runInBand",
     "test:cover": "jest  --runInBand --collectCoverage",
     "test:browser": "jest --env=jsdom",
-    "build": "tsc && parcel build index.ts --out-dir dist/browser --global logga"
+    "build": "tsc && parcel build index.ts --out-dir dist/browser --global logga",
+    "docs": "typedoc --mode file --out docs index.ts && cp *.png docs/"
   },
   "repository": {
     "type": "git",
@@ -38,6 +39,7 @@
     "jest": "24.9.0",
     "parcel": "1.12.4",
     "ts-jest": "24.3.0",
+    "typedoc": "0.16.7",
     "typescript": "3.7.5"
   },
   "jest": {
