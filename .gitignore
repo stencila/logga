@@ -1,6 +1,7 @@
-/node_modules
+.DS_Store
+/.cache
 /coverage
 /dist
+/docs
 /log.json
-/.cache
-.DS_Store
+/node_modules

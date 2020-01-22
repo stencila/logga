@@ -6,6 +6,7 @@ script:
   - npm run test:browser
   - npm run test:cover
   - npm run build
+  - npm run docs
 
 after_success:
   # Upload test coverage to codecov.io
