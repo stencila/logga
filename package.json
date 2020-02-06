@@ -34,7 +34,7 @@
   },
   "homepage": "https://github.com/stencila/logga#readme",
   "devDependencies": {
-    "@stencila/dev-config": "1.4.10",
+    "@stencila/dev-config": "1.4.11",
     "@types/jest": "25.1.2",
     "jest": "25.1.0",
     "parcel": "1.12.4",
