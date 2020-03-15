@@ -172,7 +172,7 @@ export function handlers(): LogHandler[] {
  * @param filter Options for filtering log data prior to sending to the handler.
  * @param filter.tags A list of tags that the log data should match.
  * @param filter.maxLevel The maximum log level.
- * @param filter.messageRegex A regex that the log level should match.
+ * @param filter.messageRegex A regex that the log message should match.
  * @param filter.func A function that determines if handler is called
  * @returns The handler function that was added.
  */
