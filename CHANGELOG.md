@@ -1,3 +1,10 @@
+# [2.2.0](https://github.com/stencila/logga/compare/v2.1.0...v2.2.0) (2020-04-21)
+
+
+### Features
+
+* **Build:** Create & publish modern JS builds ([032a0b2](https://github.com/stencila/logga/commit/032a0b2741c114b787219332fdc9bca6d0c9f0fb))
+
 # [2.1.0](https://github.com/stencila/logga/compare/v2.0.0...v2.1.0) (2019-12-02)
 
 
