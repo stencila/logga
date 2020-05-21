@@ -6,7 +6,7 @@ import {
   removeHandler,
   removeHandlers,
   replaceHandlers,
-  defaultHandler
+  defaultHandler,
 } from './index'
 
 test('logging', () => {
@@ -14,7 +14,7 @@ test('logging', () => {
   const log = getLogger(TAG)
 
   const events: LogData[] = []
-  addHandler(data => events.push(data))
+  addHandler((data) => events.push(data))
 
   log.debug('a debug message')
   expect(events.length).toBe(1)
@@ -25,7 +25,7 @@ test('logging', () => {
 
   log.info({
     message: 'an info message',
-    stack: 'Just a made up trace'
+    stack: 'Just a made up trace',
   })
   expect(events.length).toBe(2)
   expect(events[1].tag).toBe(TAG)
@@ -151,7 +151,7 @@ test('adding a handler with filter options', () => {
   // func filter
   const handler5 = addHandler(recordMessage, {
     func: (logData: LogData): boolean =>
-      logData.level === LogLevel.debug && logData.message.startsWith('G')
+      logData.level === LogLevel.debug && logData.message.startsWith('G'),
   })
   log1.debug('G')
   log1.debug('g')
@@ -164,7 +164,7 @@ test('adding a handler with filter options', () => {
     tags: ['log2'],
     maxLevel: LogLevel.warn,
     messageRegex: /^H/,
-    func: (logData: LogData): boolean => logData.message.endsWith('!')
+    func: (logData: LogData): boolean => logData.message.endsWith('!'),
   })
   log2.warn('Hello world!')
   log2.debug('Help!')
@@ -182,11 +182,11 @@ test('defaultHandler:maxLevel', () => {
   log.debug('a debug message')
   expect(consoleError.mock.calls.length).toBe(callsStart + 0)
 
-  replaceHandlers(data => defaultHandler(data, { maxLevel: LogLevel.debug }))
+  replaceHandlers((data) => defaultHandler(data, { maxLevel: LogLevel.debug }))
   log.debug('a debug message')
   expect(consoleError.mock.calls.length).toBe(callsStart + 1)
 
-  replaceHandlers(data => defaultHandler(data, { maxLevel: LogLevel.warn }))
+  replaceHandlers((data) => defaultHandler(data, { maxLevel: LogLevel.warn }))
   log.debug('a debug message')
   log.warn('a warn message')
   expect(consoleError.mock.calls.length).toBe(callsStart + 2)
@@ -200,9 +200,9 @@ test('defaultHandler:throttle', async () => {
   const consoleError = jest.spyOn(console, 'error')
   const callsStart = consoleError.mock.calls.length
 
-  replaceHandlers(data =>
+  replaceHandlers((data) =>
     defaultHandler(data, {
-      throttle: { signature: '${message}', duration: 200 }
+      throttle: { signature: '${message}', duration: 200 },
     })
   )
 
@@ -212,7 +212,7 @@ test('defaultHandler:throttle', async () => {
   log.error('a message')
   expect(consoleError.mock.calls.length).toBe(callsStart + 1)
 
-  await new Promise(resolve => setTimeout(resolve, 300))
+  await new Promise((resolve) => setTimeout(resolve, 300))
 
   log.error('a message')
   expect(consoleError.mock.calls.length).toBe(callsStart + 2)

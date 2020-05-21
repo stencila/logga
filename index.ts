@@ -24,7 +24,7 @@ if (typeof process !== 'undefined') {
     listeners: process.listeners as typeof bus.listeners,
     addListener: process.addListener as typeof bus.addListener,
     removeListener: process.removeListener,
-    removeAllListeners: process.removeAllListeners
+    removeAllListeners: process.removeAllListeners,
     /* eslint-enable @typescript-eslint/unbound-method */
   }
 }
@@ -65,12 +65,12 @@ if (typeof window !== 'undefined') {
       listeners.delete(handler)
     },
     removeAllListeners: (event: string) => {
-      Array.from(listeners.values()).map(listener => {
+      Array.from(listeners.values()).map((listener) => {
         // @ts-ignore
         window.removeEventListener(event, listener)
       })
       listeners.clear()
-    }
+    },
   }
 }
 
@@ -81,7 +81,7 @@ export enum LogLevel {
   error = 0,
   warn,
   info,
-  debug
+  debug,
 }
 
 /**
@@ -303,13 +303,13 @@ export function defaultHandler(
         '🚨', // error
         '⚠', // warn
         '🛈', // info
-        '🐛' // debug
+        '🐛', // debug
       ][index]
       const colour = [
         '\u001b[31;1m', // red
         '\u001b[33;1m', // yellow
         '\u001b[34;1m', // blue
-        '\u001b[30;1m' // grey (bright black)
+        '\u001b[30;1m', // grey (bright black)
       ][index]
       const cyan = '\u001b[36m'
       const reset = '\u001b[0m'
@@ -348,6 +348,6 @@ export function getLogger(tag: string): Logger {
     },
     debug(message: string | LogEvent) {
       emitLogData(message, tag, LogLevel.debug)
-    }
+    },
   }
 }
