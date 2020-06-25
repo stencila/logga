@@ -41,7 +41,7 @@
   "devDependencies": {
     "@stencila/dev-config": "1.4.49",
     "@types/jest": "26.0.0",
-    "jest": "26.0.1",
+    "jest": "26.1.0",
     "microbundle": "0.12.2",
     "ts-jest": "26.1.0",
     "typedoc": "0.17.7",
