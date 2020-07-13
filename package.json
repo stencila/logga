@@ -39,11 +39,11 @@
   },
   "homepage": "https://github.com/stencila/logga#readme",
   "devDependencies": {
-    "@stencila/dev-config": "1.4.55",
+    "@stencila/dev-config": "1.4.57",
     "@types/jest": "26.0.4",
     "jest": "26.1.0",
     "microbundle": "0.12.2",
-    "ts-jest": "26.1.1",
+    "ts-jest": "26.1.2",
     "typedoc": "0.17.8",
     "typescript": "3.9.6"
   },
