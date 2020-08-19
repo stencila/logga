@@ -39,7 +39,7 @@
   },
   "homepage": "https://github.com/stencila/logga#readme",
   "devDependencies": {
-    "@stencila/dev-config": "1.4.62",
+    "@stencila/dev-config": "1.4.63",
     "@types/jest": "26.0.9",
     "jest": "26.4.0",
     "microbundle": "0.12.3",
