@@ -1,3 +1,15 @@
+# [3.0.0](https://github.com/stencila/logga/compare/v2.2.0...v3.0.0) (2020-09-01)
+
+
+### Features
+
+* **defaultHandler:** Exit on error option ([d5447a0](https://github.com/stencila/logga/commit/d5447a098f085df625f1b523402891aa7dffef3b))
+
+
+### BREAKING CHANGES
+
+* **defaultHandler:** Changes the default behaviour to exit the process on the first error logged.
+
 # [2.2.0](https://github.com/stencila/logga/compare/v2.1.0...v2.2.0) (2020-04-21)
 
 
