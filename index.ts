@@ -237,15 +237,19 @@ export function replaceHandlers(handler: LogHandler): void {
 const defaultHandlerHistory = new Map<string, number>()
 
 /**
- * Default log data handler.
+ * Default log event handler.
  *
- * Prints the data to stderr:
+ * Prints the event data to stderr:
  *
  * - with cutesy emoji, colours and stack (for errors) if stderr is TTY (for human consumption)
  * - as JSON if stderr is not TTY (for machine consumption e.g. log files)
  *
+ * If in Node.js, and the
+ *
  * @param data The log data to handle
- * @param options.maxLevel The maximum log level to print. Defaults to `info`
+ * @param options.maxLevel The maximum log level to print. Defaults to `info`.
+ * @param options.showStack Whether or not to show any stack traces for errors. Defaults to `false`.
+ * @param options.exitOnError Whether or not to exit the process on the first error. Defaults to `true`.
  * @param options.throttle.signature The log event signature to use for throttling. Defaults to '' (i.e. all events)
  * @param options.throttle.duration The duration for throttling (milliseconds). Defaults to 1000ms
  */
@@ -254,6 +258,7 @@ export function defaultHandler(
   options: {
     maxLevel?: LogLevel
     showStack?: boolean
+    exitOnError?: boolean
     throttle?: {
       signature?: string
       duration?: number
@@ -320,6 +325,15 @@ export function defaultHandler(
     if (showStack && stack !== undefined) entry += '\n  ' + stack
   }
   console.error(entry)
+
+  const { exitOnError = true } = options
+  if (
+    typeof process !== 'undefined' &&
+    exitOnError &&
+    level === LogLevel.error
+  ) {
+    process.exit(1)
+  }
 }
 
 // Enable the default handler if there no other handler

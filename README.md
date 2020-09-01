@@ -23,6 +23,8 @@ npm install --save @stencila/logga
 
 ## Usage
 
+### Emitting log events
+
 Create a new logger by calling `getLogger` with a unique tag to identify your app and/or module. Then emit log events using the `debug`, `info`, `warn` and `error` functions. You can pass them a message string or a `LogInfo` object.
 
 ```js
@@ -45,6 +47,18 @@ try {
   })
 }
 ```
+
+See [this post](https://reflectoring.io/logging-levels/) for advice on when to use the alternative log levels. In summary,
+
+- The `ERROR` level should only be used when the application really is in trouble. Users are being affected without having a way to work around the issue.
+
+- The `WARN` level should be used when something bad happened, but the application still has the chance to heal itself or the issue can wait a day or two to be fixed.
+
+- The `INFO` level should be used to document state changes in the application or some entity within the application.
+
+- The `DEBUG` level should be used to log any information that helps us identify what went wrong.
+
+### Handling log events
 
 The default log handler prints log data to `console.error`. If `stderr` is TTY log data is formatted for human consumption with emoji, colours and stack trace (for errors):
 
@@ -82,6 +96,14 @@ addHandler((data: LogData) => {
     // do something different
   }
 })
+```
+
+### Exiting the process
+
+When in Node.js, the `defaultHandler` will exit the process, with code 1, on the first error event. To disable this behavior set the option `exitOnError: false` e.g.
+
+```js
+replaceHandlers((data) => defaultHandler(data, { exitOnError: false }))
 ```
 
 ## See also

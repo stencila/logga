@@ -14,7 +14,7 @@ test('logging', () => {
   const log = getLogger(TAG)
 
   const events: LogData[] = []
-  addHandler((data) => events.push(data))
+  replaceHandlers((data) => events.push(data))
 
   log.debug('a debug message')
   expect(events.length).toBe(1)
@@ -46,6 +46,7 @@ test('logging', () => {
 
 test('TTY', () => {
   const log = getLogger('tests:tty')
+  replaceHandlers((data) => defaultHandler(data, { exitOnError: false }))
 
   // Fake that we are using a TTY device
   process.stderr.isTTY = true
@@ -60,6 +61,7 @@ test('TTY', () => {
 
 test('non-TTY', () => {
   const log = getLogger('tests:non-tty')
+  replaceHandlers((data) => defaultHandler(data, { exitOnError: false }))
 
   // Fake that we are using a non-TTY device
   // @ts-ignore
@@ -202,6 +204,7 @@ test('defaultHandler:throttle', async () => {
 
   replaceHandlers((data) =>
     defaultHandler(data, {
+      exitOnError: false,
       throttle: { signature: '${message}', duration: 200 },
     })
   )
