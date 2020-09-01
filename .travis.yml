@@ -1,5 +1,5 @@
 language: node_js
-node_js: '10'
+node_js: '12'
 
 script:
   - npm run lint
@@ -17,5 +17,12 @@ deploy:
   - provider: script
     skip_cleanup: true
     script: npx semantic-release
+    on:
+      branch: master
+  # Deploy documentation to Github Pages
+  - provider: pages
+    skip-cleanup: true
+    github-token: $GITHUB_TOKEN
+    local-dir: docs
     on:
       branch: master
