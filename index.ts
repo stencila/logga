@@ -3,6 +3,52 @@
 const LOG_EVENT_NAME = 'stencila:logga'
 
 /**
+ * The severity level of a log event.
+ */
+export enum LogLevel {
+  error = 0,
+  warn,
+  info,
+  debug,
+}
+
+/**
+ * Information supplied to the logger
+ * about a log event.
+ */
+export interface LogEvent {
+  message?: string
+  stack?: string
+}
+
+/**
+ * Data associated with a log event
+ */
+export interface LogData {
+  tag: string
+  level: LogLevel
+  message: string
+  stack?: string
+}
+
+/**
+ * A log event emitter
+ */
+export interface Logger {
+  error(message: string | LogEvent): void
+  warn(message: string | LogEvent): void
+  info(message: string | LogEvent): void
+  debug(message: string | LogEvent): void
+}
+
+/**
+ * A log event handler
+ */
+export interface LogHandler {
+  (data: LogData): void
+}
+
+/**
  * The global log event bus from which all events are emitted
  * and handlers are attached.
  *
@@ -72,52 +118,6 @@ if (typeof window !== 'undefined') {
       listeners.clear()
     },
   }
-}
-
-/**
- * The severity level of a log event.
- */
-export enum LogLevel {
-  error = 0,
-  warn,
-  info,
-  debug,
-}
-
-/**
- * Information supplied to the logger
- * about a log event.
- */
-export interface LogEvent {
-  message?: string
-  stack?: string
-}
-
-/**
- * Data associated with a log event
- */
-export interface LogData {
-  tag: string
-  level: LogLevel
-  message: string
-  stack?: string
-}
-
-/**
- * A log event emitter
- */
-export interface Logger {
-  error(message: string | LogEvent): void
-  warn(message: string | LogEvent): void
-  info(message: string | LogEvent): void
-  debug(message: string | LogEvent): void
-}
-
-/**
- * A log event handler
- */
-export interface LogHandler {
-  (data: LogData): void
 }
 
 /**
