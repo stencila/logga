@@ -332,7 +332,9 @@ export function defaultHandler(
     exitOnError &&
     level === LogLevel.error
   ) {
-    process.exit(1)
+    // Optional call to avoid exception if process does not have an exit method
+    // See https://github.com/stencila/logga/issues/68#issuecomment-710114596
+    process.exit?.(1)
   }
 }
 
