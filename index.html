@@ -1,0 +1,247 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>@stencila/logga</title>
+	<meta name="description" content="Documentation for @stencila/logga">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="assets/js/search.json" data-base=".">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="index.html" class="title">@stencila/logga</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-externals" checked />
+							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
+							<input type="checkbox" id="tsd-filter-only-exported" />
+							<label class="tsd-widget" for="tsd-filter-only-exported">Only exported</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="globals.html">Globals</a>
+				</li>
+			</ul>
+			<h1>@stencila/logga</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<div class="tsd-panel tsd-typography">
+				<a href="#logga" id="logga" style="color: inherit; text-decoration: none;">
+					<h1>Logga</h1>
+				</a>
+				<p>🌲 Emit log events from anywhere. Consistently.</p>
+				<p><a href="https://travis-ci.org/stencila/logga"><img src="https://travis-ci.org/stencila/logga.svg?branch=master" alt="Build status"></a>
+					<a href="https://codecov.io/gh/stencila/logga"><img src="https://codecov.io/gh/stencila/logga/branch/master/graph/badge.svg" alt="Code coverage"></a>
+					<a href="https://www.npmjs.com/package/@stencila/logga"><img src="https://img.shields.io/npm/v/@stencila/logga.svg?style=flat" alt="NPM"></a>
+				<a href="https://stencila.github.io/logga/"><img src="https://img.shields.io/badge/docs-latest-blue.svg" alt="Docs"></a></p>
+				<a href="#why" id="why" style="color: inherit; text-decoration: none;">
+					<h2>Why?</h2>
+				</a>
+				<p>We wanted to have a unified, consistent mechanism for emitting log event data across libraries. We wanted to decouple log event emission from log event consumption. We didn&#39;t want to have to pass <code>log</code> objects around everywhere. We wanted type safety. We wanted something lightweight.</p>
+				<a href="#approach" id="approach" style="color: inherit; text-decoration: none;">
+					<h2>Approach</h2>
+				</a>
+				<p>The approach used in <code>logga</code> is to use <code>process</code> (in Node) or <code>window</code> (in browsers) as a bus for log events. It&#39;s a simple approach, described in <a href="https://gist.github.com/constantology/5f04d5782c1cc019722f">this gist</a>, that combines emitting events using <code>process.emit()</code> or <code>window.dispatchEvent()</code> and registering log handlers as event listeners.</p>
+				<a href="#install" id="install" style="color: inherit; text-decoration: none;">
+					<h2>Install</h2>
+				</a>
+				<pre><code class="language-bash">npm install --save @stencila/logga</code></pre>
+				<a href="#usage" id="usage" style="color: inherit; text-decoration: none;">
+					<h2>Usage</h2>
+				</a>
+				<a href="#emitting-log-events" id="emitting-log-events" style="color: inherit; text-decoration: none;">
+					<h3>Emitting log events</h3>
+				</a>
+				<p>Create a new logger by calling <code>getLogger</code> with a unique tag to identify your app and/or module. Then emit log events using the <code>debug</code>, <code>info</code>, <code>warn</code> and <code>error</code> functions. You can pass them a message string or a <code>LogInfo</code> object.</p>
+				<pre><code class="language-js"><span class="hljs-keyword">const</span> { getLogger } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;@stencila/logga&#x27;</span>)
+
+<span class="hljs-keyword">const</span> log = getLogger(<span class="hljs-string">&#x27;example&#x27;</span>)
+
+log.debug(<span class="hljs-string">&#x27;This is line five.&#x27;</span>)
+log.info(<span class="hljs-string">&#x27;Everything is just fine.&#x27;</span>)
+log.warn(<span class="hljs-string">&#x27;Oh, oh, not no much.&#x27;</span>)
+log.error(<span class="hljs-string">&#x27;Aaargh, an error!&#x27;</span>)
+
+<span class="hljs-keyword">try</span> {
+  <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">&#x27;I am an error object.&#x27;</span>)
+} <span class="hljs-keyword">catch</span> (error) {
+  <span class="hljs-keyword">const</span> { message, stack } = error
+  log.error({
+    <span class="hljs-attr">message</span>: <span class="hljs-string">&#x27;Woaaah something bad happened! &#x27;</span> + message,
+    stack,
+  })
+}</code></pre>
+				<p>See <a href="https://reflectoring.io/logging-levels/">this post</a> for advice on when to use the alternative log levels. In summary,</p>
+				<ul>
+					<li><p>The <code>ERROR</code> level should only be used when the application really is in trouble. Users are being affected without having a way to work around the issue.</p>
+					</li>
+					<li><p>The <code>WARN</code> level should be used when something bad happened, but the application still has the chance to heal itself or the issue can wait a day or two to be fixed.</p>
+					</li>
+					<li><p>The <code>INFO</code> level should be used to document state changes in the application or some entity within the application.</p>
+					</li>
+					<li><p>The <code>DEBUG</code> level should be used to log any information that helps us identify what went wrong.</p>
+					</li>
+				</ul>
+				<a href="#handling-log-events" id="handling-log-events" style="color: inherit; text-decoration: none;">
+					<h3>Handling log events</h3>
+				</a>
+				<p>The default log handler prints log data to <code>console.error</code>. If <code>stderr</code> is TTY log data is formatted for human consumption with emoji, colours and stack trace (for errors):</p>
+				<p><img src="screenshot.png" alt=""></p>
+				<p>If <code>stderr</code> is not TTY log data is formatted for machine consumption (e.g. for log files) as <a href="http://ndjson.org/">ndjson</a>, with a time stamp, if <code>stderr</code> (for machine consumption e.g. log files):</p>
+				<pre><code class="language-json">{<span class="hljs-attr">&quot;time&quot;</span>:<span class="hljs-string">&quot;2019-07-02T21:19:24.872Z&quot;</span>,<span class="hljs-attr">&quot;tag&quot;</span>:<span class="hljs-string">&quot;example&quot;</span>,<span class="hljs-attr">&quot;level&quot;</span>:<span class="hljs-number">3</span>,<span class="hljs-attr">&quot;message&quot;</span>:<span class="hljs-string">&quot;This is line five.&quot;</span>,<span class="hljs-attr">&quot;stack&quot;</span>:<span class="hljs-string">&quot;Error\n    at Object.&lt;anonymous&gt; (/home/nokome/stencila/source/logga/example.js:21:5)\n    at Module._compile (internal/modules/cjs/loader.js:689:30)\n    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)\n    at Module.load (internal/modules/cjs/loader.js:599:32)\n    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)\n    at Function.Module._load (internal/modules/cjs/loader.js:530:3)\n    at Function.Module.runMain (internal/modules/cjs/loader.js:742:12)\n    at startup (internal/bootstrap/node.js:266:19)&quot;</span>}
+{<span class="hljs-attr">&quot;time&quot;</span>:<span class="hljs-string">&quot;2019-07-02T21:19:24.875Z&quot;</span>,<span class="hljs-attr">&quot;tag&quot;</span>:<span class="hljs-string">&quot;example&quot;</span>,<span class="hljs-attr">&quot;level&quot;</span>:<span class="hljs-number">2</span>,<span class="hljs-attr">&quot;message&quot;</span>:<span class="hljs-string">&quot;Everything is just fine.&quot;</span>,<span class="hljs-attr">&quot;stack&quot;</span>:<span class="hljs-string">&quot;Error\n    at Object.&lt;anonymous&gt; (/home/nokome/stencila/source/logga/example.js:22:5)\n    at Module._compile (internal/modules/cjs/loader.js:689:30)\n    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)\n    at Module.load (internal/modules/cjs/loader.js:599:32)\n    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)\n    at Function.Module._load (internal/modules/cjs/loader.js:530:3)\n    at Function.Module.runMain (internal/modules/cjs/loader.js:742:12)\n    at startup (internal/bootstrap/node.js:266:19)&quot;</span>}
+{<span class="hljs-attr">&quot;time&quot;</span>:<span class="hljs-string">&quot;2019-07-02T21:19:24.875Z&quot;</span>,<span class="hljs-attr">&quot;tag&quot;</span>:<span class="hljs-string">&quot;example&quot;</span>,<span class="hljs-attr">&quot;level&quot;</span>:<span class="hljs-number">1</span>,<span class="hljs-attr">&quot;message&quot;</span>:<span class="hljs-string">&quot;Oh, oh, not no much.&quot;</span>,<span class="hljs-attr">&quot;stack&quot;</span>:<span class="hljs-string">&quot;Error\n    at Object.&lt;anonymous&gt; (/home/nokome/stencila/source/logga/example.js:23:5)\n    at Module._compile (internal/modules/cjs/loader.js:689:30)\n    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)\n    at Module.load (internal/modules/cjs/loader.js:599:32)\n    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)\n    at Function.Module._load (internal/modules/cjs/loader.js:530:3)\n    at Function.Module.runMain (internal/modules/cjs/loader.js:742:12)\n    at startup (internal/bootstrap/node.js:266:19)&quot;</span>}
+{<span class="hljs-attr">&quot;time&quot;</span>:<span class="hljs-string">&quot;2019-07-02T21:19:24.875Z&quot;</span>,<span class="hljs-attr">&quot;tag&quot;</span>:<span class="hljs-string">&quot;example&quot;</span>,<span class="hljs-attr">&quot;level&quot;</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">&quot;message&quot;</span>:<span class="hljs-string">&quot;Aaargh, an error!&quot;</span>,<span class="hljs-attr">&quot;stack&quot;</span>:<span class="hljs-string">&quot;Error\n    at Object.&lt;anonymous&gt; (/home/nokome/stencila/source/logga/example.js:24:5)\n    at Module._compile (internal/modules/cjs/loader.js:689:30)\n    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)\n    at Module.load (internal/modules/cjs/loader.js:599:32)\n    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)\n    at Function.Module._load (internal/modules/cjs/loader.js:530:3)\n    at Function.Module.runMain (internal/modules/cjs/loader.js:742:12)\n    at startup (internal/bootstrap/node.js:266:19)&quot;</span>}
+{<span class="hljs-attr">&quot;time&quot;</span>:<span class="hljs-string">&quot;2019-07-02T21:19:24.875Z&quot;</span>,<span class="hljs-attr">&quot;tag&quot;</span>:<span class="hljs-string">&quot;example&quot;</span>,<span class="hljs-attr">&quot;level&quot;</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">&quot;message&quot;</span>:<span class="hljs-string">&quot;Woaaah something bad happened! I am an error object.&quot;</span>,<span class="hljs-attr">&quot;stack&quot;</span>:<span class="hljs-string">&quot;Error: I am an error object.\n    at Object.&lt;anonymous&gt; (/home/nokome/stencila/source/logga/example.js:27:9)\n    at Module._compile (internal/modules/cjs/loader.js:689:30)\n    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)\n    at Module.load (internal/modules/cjs/loader.js:599:32)\n    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)\n    at Function.Module._load (internal/modules/cjs/loader.js:530:3)\n    at Function.Module.runMain (internal/modules/cjs/loader.js:742:12)\n    at startup (internal/bootstrap/node.js:266:19)\n    at bootstrapNodeJSCore (internal/bootstrap/node.js:596:3)&quot;</span>}</code></pre>
+				<p>See <a href="index.test.html"><code>index.test.html</code></a> for example usage in the browser.</p>
+				<p>You can register a new handler by calling <code>addHandler</code> with a handling function. Or use <code>replaceHandlers</code> to replace any existing log handlers (including the default). If you don&#39;t want any log handling at all, remove the default handler using <code>removeHandlers</code>.</p>
+				<p>Logga can be used with a log handling library e.g. Winston, Pino.</p>
+				<pre><code class="language-javascript"><span class="hljs-comment">// In library, create a named logger</span>
+<span class="hljs-keyword">const</span> logger = getLogger(<span class="hljs-string">&#x27;encoda&#x27;</span>)</code></pre>
+				<pre><code class="language-javascript"><span class="hljs-comment">// Handle the log messages in application code</span>
+addHandler(<span class="hljs-function">(<span class="hljs-params">data: LogData</span>) =&gt;</span> {
+  <span class="hljs-comment">// Send off to log output function</span>
+  winstonLogger.log(LogLevel[data.level], data.message)
+
+  <span class="hljs-comment">// or filter on tag</span>
+  <span class="hljs-keyword">if</span> (data.tag === <span class="hljs-string">&#x27;encoda&#x27;</span>) {
+    <span class="hljs-comment">// do something different</span>
+  }
+})</code></pre>
+				<a href="#exiting-the-process" id="exiting-the-process" style="color: inherit; text-decoration: none;">
+					<h3>Exiting the process</h3>
+				</a>
+				<p>When in Node.js, the <code>defaultHandler</code> will exit the process, with code 1, on the first error event. To disable this behavior set the option <code>exitOnError: false</code> e.g.</p>
+				<pre><code class="language-js">replaceHandlers(<span class="hljs-function">(<span class="hljs-params">data</span>) =&gt;</span> defaultHandler(data, { <span class="hljs-attr">exitOnError</span>: <span class="hljs-literal">false</span> }))</code></pre>
+				<a href="#see-also" id="see-also" style="color: inherit; text-decoration: none;">
+					<h2>See also</h2>
+				</a>
+				<p>See this <a href="https://github.com/trentm/node-bunyan/issues/116">issue in <code>node-bunyan</code></a> describing the use case for, and approaches to, a global, shared logger in Node.</p>
+				<blockquote>
+					<p>I guess this is similar to the idea in log4j (likewise clones like log4js, Python&#39;s logging module, etc.) where logger objects are global to the process such that, e.g., log = logging.getLogger(&quot;foo&quot;) used in two separate modules gets the same logger.</p>
+				</blockquote>
+				<p><a href="https://www.npmjs.com/package/bole"><code>bole</code></a> has the same goals as <code>logga</code> (but uses a singleton object instead of events)</p>
+				<blockquote>
+					<p><code>bole</code> is designed for global singleton use. Your application has many log sources, but they all aggregate to the same sources. You configure output in one place for an application, regardless of how many modules and dependencies are also using <code>bole</code> for logging.</p>
+				</blockquote>
+			</div>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class="globals  ">
+						<a href="globals.html"><em>Globals</em></a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+					<li class=" tsd-kind-enum">
+						<a href="enums/loglevel.html" class="tsd-kind-icon">Log<wbr>Level</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/logdata.html" class="tsd-kind-icon">Log<wbr>Data</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/logevent.html" class="tsd-kind-icon">Log<wbr>Event</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/loghandler.html" class="tsd-kind-icon">Log<wbr>Handler</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/logger.html" class="tsd-kind-icon">Logger</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#log_event_name" class="tsd-kind-icon">LOG_<wbr>EVENT_<wbr>NAME</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#bus" class="tsd-kind-icon">bus</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#defaulthandlerhistory" class="tsd-kind-icon">default<wbr>Handler<wbr>History</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#addhandler" class="tsd-kind-icon">add<wbr>Handler</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#defaulthandler" class="tsd-kind-icon">default<wbr>Handler</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#emitlogdata" class="tsd-kind-icon">emit<wbr>Log<wbr>Data</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#getlogger" class="tsd-kind-icon">get<wbr>Logger</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#handlers" class="tsd-kind-icon">handlers</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#removehandler" class="tsd-kind-icon">remove<wbr>Handler</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#removehandlers" class="tsd-kind-icon">remove<wbr>Handlers</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#replacehandlers" class="tsd-kind-icon">replace<wbr>Handlers</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="assets/js/main.js"></script>
+</body>
+</html>
