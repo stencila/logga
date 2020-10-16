@@ -1,3 +1,10 @@
+## [3.0.1](https://github.com/stencila/logga/compare/v3.0.0...v3.0.1) (2020-10-16)
+
+
+### Bug Fixes
+
+* **Default handler:** Optional call to avoid exception if process does not have an exit method ([9cf7e6e](https://github.com/stencila/logga/commit/9cf7e6e76b40e7cecb672134fdfb69fc9308c8f8))
+
 # [3.0.0](https://github.com/stencila/logga/compare/v2.2.0...v3.0.0) (2020-09-01)
 
 
