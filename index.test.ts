@@ -41,7 +41,7 @@ test('logging', () => {
   expect(events[3].stack).toMatch(/^Error:/)
   // Second line (first call stack) in stack trace should be this file
   // @ts-ignore
-  expect(events[3].stack.split('\n')[1]).toMatch(/logga\/index\.test\.ts/)
+  expect(events[3].stack.split('\n')[1]).toMatch(/\/index\.test\.ts/)
 })
 
 test('TTY', () => {
