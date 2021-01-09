@@ -36,7 +36,8 @@ test('logging', () => {
   log.warn('a warning message')
   expect(events[2].level).toBe(LogLevel.warn)
 
-  log.error('an error message')
+  let error = new Error('an error message')
+  log.error(error)
   expect(events[3].level).toBe(LogLevel.error)
   expect(events[3].stack).toMatch(/^Error:/)
   // Second line (first call stack) in stack trace should be this file
@@ -68,7 +69,8 @@ test('non-TTY', () => {
   process.stderr.isTTY = false
   const consoleError = jest.spyOn(console, 'error')
 
-  log.error('an error message')
+  let error = new Error('an error message')
+  log.error(error)
 
   const json = consoleError.mock.calls[consoleError.mock.calls.length - 1][0]
   const data = JSON.parse(json)

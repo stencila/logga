@@ -124,9 +124,6 @@ if (typeof window !== 'undefined') {
  * Take a message `string`, or `LogInfo` object,
  * and emit an event with a `LogData` object.
  *
- * For `LogLevel.error`, if `LogInfo` does not have a `stack`,
- * one is generated and set on the `LogData`.
- *
  * @param info
  * @param level
  */
@@ -135,26 +132,17 @@ function emitLogData(
   tag: string,
   level: LogLevel
 ): void {
-  let message = ''
-  if (typeof info === 'object' && info.message !== undefined) {
-    message = info.message
-  } else if (typeof info === 'string') {
-    message = info
-  }
+  let message =
+    typeof info === 'string'
+      ? info
+      : typeof info === 'object'
+      ? info?.message ?? ''
+      : ''
 
-  const data: LogData = { tag, level, message }
+  let stack = typeof info === 'object' ? info?.stack : undefined
 
-  if (typeof info === 'object' && info.stack !== undefined) {
-    data.stack = info.stack
-  } else if (level <= LogLevel.error) {
-    const error = new Error()
-    if (error.stack !== undefined) {
-      // Remove the first three lines of the stack trace which
-      // are not useful (see issue #3)
-      const lines = error.stack.split('\n')
-      data.stack = [lines[0], ...lines.slice(3)].join('\n')
-    }
-  }
+  const data: LogData = { tag, level, message, stack }
+
   bus.emit(LOG_EVENT_NAME, data)
 }
 
