@@ -67,8 +67,23 @@ const winstonLogger = winston.createLogger({
   ],
 })
 
-// Run the benchmark suite!
+// Run the benchmark suites!
 
+// A more precise benchmark for comparing performance
+// across changes in code
+new Benchmark.Suite()
+  .add('logga', {
+    minSamples: 500,
+    fn: function () {
+      loggaLogger.error({ msg: 'hello' })
+    },
+  })
+  .on('cycle', function (event) {
+    console.log(String(event.target))
+  })
+  .run()
+
+// For comparison with other libraries
 new Benchmark.Suite()
   .add('bole', function () {
     boleLogger.error({ msg: 'hello' })
