@@ -245,6 +245,7 @@ export function defaultHandler(
   data: LogData,
   options: {
     maxLevel?: LogLevel
+    fastTime?: boolean
     showStack?: boolean
     exitOnError?: boolean
     throttle?: {
@@ -284,7 +285,11 @@ export function defaultHandler(
     process.stderr !== undefined &&
     process.stderr.isTTY !== true
   ) {
-    entry = JSON.stringify({ time: new Date().toISOString(), ...data })
+    const { fastTime = false } = options
+    entry = JSON.stringify({
+      time: fastTime ? Date.now() : new Date().toISOString(),
+      ...data,
+    })
   } else {
     const index = level < 0 ? 0 : level > 3 ? 3 : level
     const label = LogLevel[index].toUpperCase().padEnd(5, ' ')

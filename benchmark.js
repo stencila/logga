@@ -51,7 +51,7 @@ log4js.configure({
 
 const loggaLogger = logga.getLogger('bench')
 logga.replaceHandlers((entry) => {
-  logga.defaultHandler(entry, { exitOnError: false })
+  logga.defaultHandler(entry, { fastTime: true, exitOnError: false })
 })
 
 const loglevelLogger = loglevel.getLogger('bench')
