@@ -15,7 +15,7 @@
     "/dist"
   ],
   "scripts": {
-    "format": "npx prettier --write './**/*.{md,ts}'",
+    "format": "npx prettier --write './**/*.{js,md,ts}'",
     "lint": "eslint 'index.ts' --fix",
     "test": "jest --runInBand",
     "test:cover": "jest  --runInBand --collectCoverage",
