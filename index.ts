@@ -312,7 +312,14 @@ export function defaultHandler(
     const { showStack = false } = options
     if (showStack && stack !== undefined) entry += '\n  ' + stack
   }
-  console.error(entry)
+
+  // On Node.js, writing directly to stderr provides a performance boost
+  // of ~ 150% (based on our benchmarking)
+  if (typeof process !== 'undefined') {
+    process.stderr.write(entry + '\n')
+  } else {
+    console.error(entry)
+  }
 
   const { exitOnError = true } = options
   if (

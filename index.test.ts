@@ -9,6 +9,11 @@ import {
   defaultHandler,
 } from './index'
 
+const spyOnWriter = () =>
+  typeof process !== 'undefined'
+    ? jest.spyOn(process.stderr, 'write')
+    : jest.spyOn(console, 'error')
+
 test('logging', () => {
   const TAG = 'tests:logging'
   const log = getLogger(TAG)
@@ -51,7 +56,7 @@ test('TTY', () => {
 
   // Fake that we are using a TTY device
   process.stderr.isTTY = true
-  const consoleError = jest.spyOn(console, 'error')
+  const consoleError = spyOnWriter()
 
   log.error('an error message')
 
@@ -67,7 +72,7 @@ test('non-TTY', () => {
   // Fake that we are using a non-TTY device
   // @ts-ignore
   process.stderr.isTTY = false
-  const consoleError = jest.spyOn(console, 'error')
+  const consoleError = spyOnWriter()
 
   let error = new Error('an error message')
   log.error(error)
@@ -82,7 +87,7 @@ test('non-TTY', () => {
 
 test('adding and removing handlers', () => {
   const log = getLogger('tests:handlers')
-  const consoleError = jest.spyOn(console, 'error')
+  const consoleError = spyOnWriter()
   const consoleErrorCalls = consoleError.mock.calls.length
   const events: LogData[] = []
 
@@ -180,7 +185,7 @@ test('adding a handler with filter options', () => {
 test('defaultHandler:maxLevel', () => {
   const log = getLogger('logger')
 
-  const consoleError = jest.spyOn(console, 'error')
+  const consoleError = spyOnWriter()
   const callsStart = consoleError.mock.calls.length
 
   log.debug('a debug message')
@@ -201,7 +206,7 @@ test('defaultHandler:maxLevel', () => {
 test('defaultHandler:throttle', async () => {
   const log = getLogger('logger')
 
-  const consoleError = jest.spyOn(console, 'error')
+  const consoleError = spyOnWriter()
   const callsStart = consoleError.mock.calls.length
 
   replaceHandlers((data) =>
