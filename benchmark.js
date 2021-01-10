@@ -86,25 +86,25 @@ new Benchmark.Suite()
 // For comparison with other libraries
 new Benchmark.Suite()
   .add('bole', function () {
-    boleLogger.error({ msg: 'hello' })
+    boleLogger.error('derp')
   })
   .add('bunyan', function () {
-    bunyanLogger.error({ msg: 'hello' })
+    bunyanLogger.error('derp')
   })
   .add('logga', function () {
-    loggaLogger.error({ msg: 'hello' })
+    loggaLogger.error('derp')
   })
   .add('log4js', function () {
-    log4jsLogger.error({ msg: 'hello' })
+    log4jsLogger.error('derp')
   })
   .add('loglevel', function () {
-    loglevelLogger.error({ msg: 'hello' })
+    loglevelLogger.error('derp')
   })
   .add('pino', function () {
-    pinoLogger.error({ msg: 'hello' })
+    pinoLogger.error('derp')
   })
   .add('winston', function () {
-    winstonLogger.error({ msg: 'hello' })
+    winstonLogger.error('derp')
   })
   .on('cycle', function (event) {
     console.log(String(event.target))
