@@ -56,7 +56,7 @@ test('TTY', () => {
 
   // Fake that we are using a TTY device
   process.stderr.isTTY = true
-  const consoleError = spyOnWriter()
+  const consoleError = jest.spyOn(console, 'error')
 
   log.error('an error message')
 

@@ -258,26 +258,27 @@ export function defaultHandler(
 
   // Generate a human readable or machine readable log entry based on
   // environment
-  let entry = ''
   if (
     typeof process !== 'undefined' &&
     process.stderr !== undefined &&
     process.stderr.isTTY !== true
   ) {
     const { fastTime = false } = options
-    entry = `{"time":${
+    let json = `{"time":${
       fastTime ? Date.now() : `"${new Date().toISOString()}"`
     },"tag":"${tag}","level":${level},"message":"${message}"`
     if (stack !== undefined) {
-      entry += `,"stack":"${escape(stack)}"`
+      json += `,"stack":"${escape(stack)}"`
     }
-    entry += '}\n'
+    json += '}\n'
+    process.stderr.write(json)
   } else {
     const index = level < 0 ? 0 : level > 3 ? 3 : level
     const label = LogLevel[index].toUpperCase().padEnd(5, ' ')
+    let line
     /* istanbul ignore next */
     if (typeof window !== 'undefined') {
-      entry = `${label} ${tag} ${message}`
+      line = `${label} ${tag} ${message}`
     } else {
       const emoji = [
         '🚨', // error
@@ -293,19 +294,13 @@ export function defaultHandler(
       ][index]
       const cyan = '\u001b[36m'
       const reset = '\u001b[0m'
-      entry = `${emoji} ${colour}${label}${reset} ${cyan}${tag}${reset} ${message}`
+      line = `${emoji} ${colour}${label}${reset} ${cyan}${tag}${reset} ${message}`
     }
 
     const { showStack = false } = options
-    if (showStack && stack !== undefined) entry += '\n  ' + stack
-  }
+    if (showStack && stack !== undefined) line += '\n  ' + stack
 
-  // On Node.js, writing directly to stderr provides a performance boost
-  // of ~ 150% (based on our benchmarking)
-  if (typeof process !== 'undefined') {
-    process.stderr.write(entry)
-  } else {
-    console.error(entry)
+    console.error(line)
   }
 
   const { exitOnError = true } = options
