@@ -1,6 +1,23 @@
-/* global CustomEvent */
+var root =
+  typeof window !== 'undefined'
+    ? window
+    : typeof global !== 'undefined'
+    ? global
+    : {}
 
-const LOG_EVENT_NAME = 'stencila:logga'
+function Logga() {
+  const name = '_logga'
+  if (name in root) {
+    // @ts-ignore
+    return root[name]
+  }
+  // @ts-ignore
+  root[name] = []
+  // @ts-ignore
+  return root[name]
+}
+
+const logga: LogHandler[] = Logga()
 
 /**
  * The severity level of a log event.
@@ -49,78 +66,6 @@ export interface LogHandler {
 }
 
 /**
- * The global log event bus from which all events are emitted
- * and handlers are attached.
- *
- * When in Node, exposes the event API of Node `process`.
- * When in a browser, creates adaptor functions to mimic the
- * Node API using `window` event handling functions.
- */
-let bus: {
-  emit: (event: string, data: LogData) => void
-  listeners: (event: string) => LogHandler[]
-  addListener: (event: string, handler: LogHandler) => void
-  removeListener: (event: string, handler: LogHandler) => void
-  removeAllListeners: (event: string) => void
-}
-if (typeof process !== 'undefined') {
-  bus = {
-    /* eslint-disable @typescript-eslint/unbound-method */
-    emit: process.emit as typeof bus.emit,
-    listeners: process.listeners as typeof bus.listeners,
-    addListener: process.addListener as typeof bus.addListener,
-    removeListener: process.removeListener,
-    removeAllListeners: process.removeAllListeners,
-    /* eslint-enable @typescript-eslint/unbound-method */
-  }
-}
-/* istanbul ignore next */
-if (typeof window !== 'undefined') {
-  /**
-   * To mimic the Node event API in the browser it is necessary to:
-   *
-   * - wrap `LogData` in a `CustomEvent` when emitting an event and
-   *   unwrap it when handling an event
-   * - maintain a list of event listeners (`window` does not expose
-   *   that for us)
-   * - use a map of handlers to listeners so that we can remove them
-   */
-  type CustomEventListener = (customEvent: CustomEvent<LogData>) => void
-  const listeners = new Map<LogHandler, CustomEventListener>()
-  bus = {
-    emit: (event: string, data: LogData) => {
-      window.dispatchEvent(
-        new CustomEvent<LogData>(event, { detail: data })
-      )
-    },
-    listeners: () => {
-      return Array.from(listeners.keys())
-    },
-    addListener: (event: string, handler: LogHandler) => {
-      const listener = (customEvent: CustomEvent<LogData>): void =>
-        handler(customEvent.detail)
-      // @ts-ignore
-      window.addEventListener(event, listener)
-      listeners.set(handler, listener)
-    },
-    removeListener: (event: string, handler: LogHandler) => {
-      const listener = listeners.get(handler)
-      if (listener === undefined) return
-      // @ts-ignore
-      window.removeEventListener(event, listener)
-      listeners.delete(handler)
-    },
-    removeAllListeners: (event: string) => {
-      Array.from(listeners.values()).map((listener) => {
-        // @ts-ignore
-        window.removeEventListener(event, listener)
-      })
-      listeners.clear()
-    },
-  }
-}
-
-/**
  * Take a message `string`, or `LogInfo` object,
  * and emit an event with a `LogData` object.
  *
@@ -143,14 +88,16 @@ function emitLogData(
 
   const data: LogData = { tag, level, message, stack }
 
-  bus.emit(LOG_EVENT_NAME, data)
+  for (const handler of logga) {
+    handler(data)
+  }
 }
 
 /**
  * Get all handlers.
  */
 export function handlers(): LogHandler[] {
-  return bus.listeners(LOG_EVENT_NAME)
+  return logga
 }
 
 /**
@@ -190,7 +137,7 @@ export function addHandler(
       handler(logData)
     }
   }
-  bus.addListener(LOG_EVENT_NAME, listener)
+  logga.push(listener)
   return listener
 }
 
@@ -200,14 +147,15 @@ export function addHandler(
  * @param handler The handler function to remove.
  */
 export function removeHandler(handler: LogHandler): void {
-  bus.removeListener(LOG_EVENT_NAME, handler)
+  const index = logga.indexOf(handler)
+  if (index > -1) logga.splice(index, 1)
 }
 
 /**
  * Remove all handlers.
  */
 export function removeHandlers(): void {
-  bus.removeAllListeners(LOG_EVENT_NAME)
+  logga.splice(0, logga.length)
 }
 
 /**
