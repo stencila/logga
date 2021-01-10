@@ -75,7 +75,7 @@ new Benchmark.Suite()
   .add('logga', {
     minSamples: 500,
     fn: function () {
-      loggaLogger.error({ msg: 'hello' })
+      loggaLogger.error('derp')
     },
   })
   .on('cycle', function (event) {
