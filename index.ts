@@ -225,6 +225,37 @@ export function replaceHandlers(handler: LogHandler): void {
 const defaultHandlerHistory = new Map<string, number>()
 
 /**
+ * Escape a string for inclusion in JSON.
+ *
+ * Based on the list at https://www.json.org minus the backspace character (U+0008)
+ *
+ * @param value The string to escape
+ */
+function escape(value: string): string {
+  return value !== undefined
+    ? value.replace(/\"|\\|\/|\f|\n|\r|\t/g, (char) => {
+        switch (char) {
+          case '"':
+            return '"'
+          case '\\':
+            return '\\\\'
+          case '/':
+            return '\\/'
+          case '\f':
+            return '\\f'
+          case '\n':
+            return '\\n'
+          case '\r':
+            return '\\r'
+          case '\t':
+            return '\\t'
+        }
+        return char
+      })
+    : value
+}
+
+/**
  * Default log event handler.
  *
  * Prints the event data to stderr:
@@ -286,10 +317,13 @@ export function defaultHandler(
     process.stderr.isTTY !== true
   ) {
     const { fastTime = false } = options
-    entry = JSON.stringify({
-      time: fastTime ? Date.now() : new Date().toISOString(),
-      ...data,
-    })
+    entry = `{"time":${
+      fastTime ? Date.now() : `"${new Date().toISOString()}"`
+    },"tag":"${tag}","level":${level},"message":"${message}"`
+    if (stack !== undefined) {
+      entry += `,"stack":"${escape(stack)}"`
+    }
+    entry += '}\n'
   } else {
     const index = level < 0 ? 0 : level > 3 ? 3 : level
     const label = LogLevel[index].toUpperCase().padEnd(5, ' ')
@@ -321,7 +355,7 @@ export function defaultHandler(
   // On Node.js, writing directly to stderr provides a performance boost
   // of ~ 150% (based on our benchmarking)
   if (typeof process !== 'undefined') {
-    process.stderr.write(entry + '\n')
+    process.stderr.write(entry)
   } else {
     console.error(entry)
   }
