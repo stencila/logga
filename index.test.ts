@@ -1,5 +1,6 @@
 import {
   addHandler,
+  escape,
   getLogger,
   LogData,
   LogLevel,
@@ -50,15 +51,28 @@ test('logging', () => {
   expect(events[3].stack.split('\n')[1]).toMatch(/\/index\.test\.ts/)
 })
 
+test('escape', () => {
+  expect(escape('"')).toEqual('"')
+  expect(escape('\\')).toEqual('\\\\')
+  expect(escape('/')).toEqual('\\/')
+  expect(escape('\f')).toEqual('\\f')
+  expect(escape('\n')).toEqual('\\n')
+  expect(escape('\r')).toEqual('\\r')
+  expect(escape('\t')).toEqual('\\t')
+})
+
 test('TTY', () => {
   const log = getLogger('tests:tty')
-  replaceHandlers((data) => defaultHandler(data, { exitOnError: false }))
+  replaceHandlers((data) =>
+    defaultHandler(data, { exitOnError: false, showStack: true })
+  )
 
   // Fake that we are using a TTY device
   process.stderr.isTTY = true
   const consoleError = jest.spyOn(console, 'error')
 
-  log.error('an error message')
+  let error = new Error('an error message')
+  log.error(error)
 
   expect(consoleError).toHaveBeenCalledWith(
     expect.stringMatching(/ERROR(.*)?an error message/)
@@ -83,6 +97,18 @@ test('non-TTY', () => {
   expect(data.level).toBe(0)
   expect(data.message).toBe('an error message')
   expect(data.stack).toBeTruthy()
+})
+
+test('exit on error', () => {
+  const log = getLogger('tests:exit-on-error')
+  replaceHandlers((data) => defaultHandler(data, { exitOnError: true }))
+
+  // @ts-ignore
+  const mockExit = jest
+    .spyOn(process, 'exit')
+    .mockImplementation((code?: number): never => {})
+  log.error('an error message')
+  expect(mockExit).toHaveBeenCalledWith(1)
 })
 
 test('adding and removing handlers', () => {

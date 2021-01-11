@@ -58,6 +58,7 @@ const root =
 function Logga(): LogHandler[] {
   const name = '_logga'
   if (name in root) {
+    // istanbul ignore next
     // @ts-ignore
     return root[name] as LogHandler[]
   }
@@ -183,7 +184,7 @@ const defaultHandlerHistory = new Map<string, number>()
  *
  * @param value The string to escape
  */
-function escape(value: string): string {
+export function escape(value: string): string {
   return value !== undefined
     ? value.replace(/"|\\|\/|\f|\n|\r|\t/g, (char) => {
         switch (char) {
@@ -202,6 +203,7 @@ function escape(value: string): string {
           case '\t':
             return '\\t'
         }
+        // istanbul ignore next
         return char
       })
     : value
@@ -280,7 +282,7 @@ export function defaultHandler(
     const index = level < 0 ? 0 : level > 3 ? 3 : level
     const label = LogLevel[index].toUpperCase().padEnd(5, ' ')
     let line
-    /* istanbul ignore next */
+    // istanbul ignore next
     if (typeof window !== 'undefined') {
       line = `${label} ${tag} ${message}`
     } else {
