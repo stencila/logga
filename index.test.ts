@@ -103,9 +103,9 @@ test('exit on error', () => {
   const log = getLogger('tests:exit-on-error')
   replaceHandlers((data) => defaultHandler(data, { exitOnError: true }))
 
-  // @ts-ignore
   const mockExit = jest
     .spyOn(process, 'exit')
+    // @ts-ignore
     .mockImplementation((code?: number): never => {})
   log.error('an error message')
   expect(mockExit).toHaveBeenCalledWith(1)
