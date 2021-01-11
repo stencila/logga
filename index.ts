@@ -1,23 +1,4 @@
-var root =
-  typeof window !== 'undefined'
-    ? window
-    : typeof global !== 'undefined'
-    ? global
-    : {}
-
-function Logga() {
-  const name = '_logga'
-  if (name in root) {
-    // @ts-ignore
-    return root[name]
-  }
-  // @ts-ignore
-  root[name] = []
-  // @ts-ignore
-  return root[name]
-}
-
-const logga: LogHandler[] = Logga()
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 
 /**
  * The severity level of a log event.
@@ -65,6 +46,29 @@ export interface LogHandler {
   (data: LogData): void
 }
 
+// Global `logga` instance
+
+const root =
+  typeof window !== 'undefined'
+    ? window
+    : typeof global !== 'undefined'
+    ? global
+    : {}
+
+function Logga(): LogHandler[] {
+  const name = '_logga'
+  if (name in root) {
+    // @ts-ignore
+    return root[name] as LogHandler[]
+  }
+  // @ts-ignore
+  root[name] = []
+  // @ts-ignore
+  return root[name] as LogHandler[]
+}
+
+const logga: LogHandler[] = Logga()
+
 /**
  * Take a message `string`, or `LogInfo` object,
  * and emit an event with a `LogData` object.
@@ -77,14 +81,14 @@ function emitLogData(
   tag: string,
   level: LogLevel
 ): void {
-  let message =
+  const message =
     typeof info === 'string'
       ? info
       : typeof info === 'object'
       ? info?.message ?? ''
       : ''
 
-  let stack = typeof info === 'object' ? info?.stack : undefined
+  const stack = typeof info === 'object' ? info?.stack : undefined
 
   const data: LogData = { tag, level, message, stack }
 
@@ -181,7 +185,7 @@ const defaultHandlerHistory = new Map<string, number>()
  */
 function escape(value: string): string {
   return value !== undefined
-    ? value.replace(/\"|\\|\/|\f|\n|\r|\t/g, (char) => {
+    ? value.replace(/"|\\|\/|\f|\n|\r|\t/g, (char) => {
         switch (char) {
           case '"':
             return '"'
