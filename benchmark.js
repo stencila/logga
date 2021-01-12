@@ -1,13 +1,22 @@
 /**
  * Benchmarks comparing the speed of Logga to other Node.js logging frameworks
  *
+ * First install the benchmark and logging libraries
+ *
+ * ```sh
+ * npm install --no-save benchmark bole bunyan log4js loglevel pino winston
+ * ```
+ *
+ * Then to rebuild Logga and run the benchmarks,
+ *
+ * ```sh
+ * npm run bench
+ * ```
+ *
  * All frameworks configured to log errors to `stderr`.
  * Build Logga if necessary before running benchmarks.
  * Best run by redireting `stderr` to `/dev/null` e.g.
  *
- * ```sh
- * npm run benchmark
- * ```
  */
 
 const Benchmark = require('benchmark')
