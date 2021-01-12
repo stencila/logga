@@ -53,7 +53,9 @@ const root =
     ? window
     : typeof global !== 'undefined'
     ? global
-    : {}
+    : // Ignore in coverage because is expected to be unreachable
+      // istanbul ignore next
+      {}
 
 function Logga(): LogHandler[] {
   const name = '_logga'
@@ -185,28 +187,27 @@ const defaultHandlerHistory = new Map<string, number>()
  * @param value The string to escape
  */
 export function escape(value: string): string {
-  return value !== undefined
-    ? value.replace(/"|\\|\/|\f|\n|\r|\t/g, (char) => {
-        switch (char) {
-          case '"':
-            return '"'
-          case '\\':
-            return '\\\\'
-          case '/':
-            return '\\/'
-          case '\f':
-            return '\\f'
-          case '\n':
-            return '\\n'
-          case '\r':
-            return '\\r'
-          case '\t':
-            return '\\t'
-        }
-        // istanbul ignore next
-        return char
-      })
-    : value
+  return value.replace(/"|\\|\/|\f|\n|\r|\t/g, (char) => {
+    switch (char) {
+      case '"':
+        return '"'
+      case '\\':
+        return '\\\\'
+      case '/':
+        return '\\/'
+      case '\f':
+        return '\\f'
+      case '\n':
+        return '\\n'
+      case '\r':
+        return '\\r'
+      case '\t':
+        return '\\t'
+    }
+    // Ignore in coverage because is expected to be unreachable
+    // istanbul ignore next
+    return char
+  })
 }
 
 /**
