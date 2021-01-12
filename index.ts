@@ -48,26 +48,23 @@ export interface LogHandler {
 
 // Global `logga` instance
 
-const root =
+const root: NodeJS.Global | Window =
   typeof window !== 'undefined'
     ? window
     : typeof global !== 'undefined'
     ? global
     : // Ignore in coverage because is expected to be unreachable
       // istanbul ignore next
-      {}
+      ({} as typeof global)
 
 function Logga(): LogHandler[] {
   const name = '_logga'
   if (name in root) {
-    // istanbul ignore next
-    // @ts-ignore
-    return root[name] as LogHandler[]
+    return root[name] ?? []
   }
-  // @ts-ignore
+
   root[name] = []
-  // @ts-ignore
-  return root[name] as LogHandler[]
+  return root[name] ?? []
 }
 
 const logga: LogHandler[] = Logga()
@@ -334,7 +331,6 @@ if (handlers().length === 0) addHandler(defaultHandler)
  *
  * @param tag The unique application or package name
  */
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function getLogger(tag: string): Logger {
   return {
     error(message: string | LogEvent) {
