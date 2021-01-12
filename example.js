@@ -29,6 +29,6 @@ try {
   const { message, stack } = error
   log.error({
     message: 'Woaaah something bad happened! ' + message,
-    stack
+    stack,
   })
 }

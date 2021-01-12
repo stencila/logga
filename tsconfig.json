@@ -5,5 +5,5 @@
     "moduleResolution": "node",
     "outDir": "./dist/lib"
   },
-  "files": ["index.ts"]
+  "files": ["index.ts", "index.d.ts"]
 }

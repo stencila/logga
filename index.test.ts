@@ -1,5 +1,6 @@
 import {
   addHandler,
+  escape,
   getLogger,
   LogData,
   LogLevel,
@@ -8,6 +9,11 @@ import {
   replaceHandlers,
   defaultHandler,
 } from './index'
+
+const spyOnWriter = () =>
+  typeof process !== 'undefined'
+    ? jest.spyOn(process.stderr, 'write')
+    : jest.spyOn(console, 'error')
 
 test('logging', () => {
   const TAG = 'tests:logging'
@@ -36,7 +42,8 @@ test('logging', () => {
   log.warn('a warning message')
   expect(events[2].level).toBe(LogLevel.warn)
 
-  log.error('an error message')
+  let error = new Error('an error message')
+  log.error(error)
   expect(events[3].level).toBe(LogLevel.error)
   expect(events[3].stack).toMatch(/^Error:/)
   // Second line (first call stack) in stack trace should be this file
@@ -44,15 +51,28 @@ test('logging', () => {
   expect(events[3].stack.split('\n')[1]).toMatch(/\/index\.test\.ts/)
 })
 
+test('escape', () => {
+  expect(escape('"')).toEqual('"')
+  expect(escape('\\')).toEqual('\\\\')
+  expect(escape('/')).toEqual('\\/')
+  expect(escape('\f')).toEqual('\\f')
+  expect(escape('\n')).toEqual('\\n')
+  expect(escape('\r')).toEqual('\\r')
+  expect(escape('\t')).toEqual('\\t')
+})
+
 test('TTY', () => {
   const log = getLogger('tests:tty')
-  replaceHandlers((data) => defaultHandler(data, { exitOnError: false }))
+  replaceHandlers((data) =>
+    defaultHandler(data, { exitOnError: false, showStack: true })
+  )
 
   // Fake that we are using a TTY device
   process.stderr.isTTY = true
   const consoleError = jest.spyOn(console, 'error')
 
-  log.error('an error message')
+  let error = new Error('an error message')
+  log.error(error)
 
   expect(consoleError).toHaveBeenCalledWith(
     expect.stringMatching(/ERROR(.*)?an error message/)
@@ -66,9 +86,10 @@ test('non-TTY', () => {
   // Fake that we are using a non-TTY device
   // @ts-ignore
   process.stderr.isTTY = false
-  const consoleError = jest.spyOn(console, 'error')
+  const consoleError = spyOnWriter()
 
-  log.error('an error message')
+  let error = new Error('an error message')
+  log.error(error)
 
   const json = consoleError.mock.calls[consoleError.mock.calls.length - 1][0]
   const data = JSON.parse(json)
@@ -78,9 +99,21 @@ test('non-TTY', () => {
   expect(data.stack).toBeTruthy()
 })
 
+test('exit on error', () => {
+  const log = getLogger('tests:exit-on-error')
+  replaceHandlers((data) => defaultHandler(data, { exitOnError: true }))
+
+  const mockExit = jest
+    .spyOn(process, 'exit')
+    // @ts-ignore
+    .mockImplementation((code?: number): never => {})
+  log.error('an error message')
+  expect(mockExit).toHaveBeenCalledWith(1)
+})
+
 test('adding and removing handlers', () => {
   const log = getLogger('tests:handlers')
-  const consoleError = jest.spyOn(console, 'error')
+  const consoleError = spyOnWriter()
   const consoleErrorCalls = consoleError.mock.calls.length
   const events: LogData[] = []
 
@@ -178,7 +211,7 @@ test('adding a handler with filter options', () => {
 test('defaultHandler:maxLevel', () => {
   const log = getLogger('logger')
 
-  const consoleError = jest.spyOn(console, 'error')
+  const consoleError = spyOnWriter()
   const callsStart = consoleError.mock.calls.length
 
   log.debug('a debug message')
@@ -199,7 +232,7 @@ test('defaultHandler:maxLevel', () => {
 test('defaultHandler:throttle', async () => {
   const log = getLogger('logger')
 
-  const consoleError = jest.spyOn(console, 'error')
+  const consoleError = spyOnWriter()
   const callsStart = consoleError.mock.calls.length
 
   replaceHandlers((data) =>

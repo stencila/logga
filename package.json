@@ -15,7 +15,7 @@
     "/dist"
   ],
   "scripts": {
-    "format": "npx prettier --write './**/*.{md,ts}'",
+    "format": "npx prettier --write './**/*.{js,md,ts}'",
     "lint": "eslint 'index.ts' --fix",
     "test": "jest --runInBand",
     "test:cover": "jest  --runInBand --collectCoverage",
@@ -23,6 +23,7 @@
     "build": "npm run build:node && npm run build:browser",
     "build:node": "microbundle build --target node --format es,cjs -o dist/lib",
     "build:browser": "microbundle build --name logga --format es,umd -o dist/browser",
+    "bench": "npm run build:node && node benchmark.js 2>/dev/null",
     "docs": "typedoc --mode file --out docs index.ts && cp *.png docs/"
   },
   "repository": {

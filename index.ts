@@ -1,6 +1,4 @@
-/* global CustomEvent */
-
-const LOG_EVENT_NAME = 'stencila:logga'
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 
 /**
  * The severity level of a log event.
@@ -48,84 +46,32 @@ export interface LogHandler {
   (data: LogData): void
 }
 
-/**
- * The global log event bus from which all events are emitted
- * and handlers are attached.
- *
- * When in Node, exposes the event API of Node `process`.
- * When in a browser, creates adaptor functions to mimic the
- * Node API using `window` event handling functions.
- */
-let bus: {
-  emit: (event: string, data: LogData) => void
-  listeners: (event: string) => LogHandler[]
-  addListener: (event: string, handler: LogHandler) => void
-  removeListener: (event: string, handler: LogHandler) => void
-  removeAllListeners: (event: string) => void
-}
-if (typeof process !== 'undefined') {
-  bus = {
-    /* eslint-disable @typescript-eslint/unbound-method */
-    emit: process.emit as typeof bus.emit,
-    listeners: process.listeners as typeof bus.listeners,
-    addListener: process.addListener as typeof bus.addListener,
-    removeListener: process.removeListener,
-    removeAllListeners: process.removeAllListeners,
-    /* eslint-enable @typescript-eslint/unbound-method */
+// Global `logga` instance
+
+const root: NodeJS.Global | Window =
+  typeof window !== 'undefined'
+    ? window
+    : typeof global !== 'undefined'
+    ? global
+    : // Ignore in coverage because is expected to be unreachable
+      // istanbul ignore next
+      ({} as typeof global)
+
+function Logga(): LogHandler[] {
+  const name = '_logga'
+  if (name in root) {
+    return root[name] ?? []
   }
+
+  root[name] = []
+  return root[name] ?? []
 }
-/* istanbul ignore next */
-if (typeof window !== 'undefined') {
-  /**
-   * To mimic the Node event API in the browser it is necessary to:
-   *
-   * - wrap `LogData` in a `CustomEvent` when emitting an event and
-   *   unwrap it when handling an event
-   * - maintain a list of event listeners (`window` does not expose
-   *   that for us)
-   * - use a map of handlers to listeners so that we can remove them
-   */
-  type CustomEventListener = (customEvent: CustomEvent<LogData>) => void
-  const listeners = new Map<LogHandler, CustomEventListener>()
-  bus = {
-    emit: (event: string, data: LogData) => {
-      window.dispatchEvent(
-        new CustomEvent<LogData>(event, { detail: data })
-      )
-    },
-    listeners: () => {
-      return Array.from(listeners.keys())
-    },
-    addListener: (event: string, handler: LogHandler) => {
-      const listener = (customEvent: CustomEvent<LogData>): void =>
-        handler(customEvent.detail)
-      // @ts-ignore
-      window.addEventListener(event, listener)
-      listeners.set(handler, listener)
-    },
-    removeListener: (event: string, handler: LogHandler) => {
-      const listener = listeners.get(handler)
-      if (listener === undefined) return
-      // @ts-ignore
-      window.removeEventListener(event, listener)
-      listeners.delete(handler)
-    },
-    removeAllListeners: (event: string) => {
-      Array.from(listeners.values()).map((listener) => {
-        // @ts-ignore
-        window.removeEventListener(event, listener)
-      })
-      listeners.clear()
-    },
-  }
-}
+
+const logga: LogHandler[] = Logga()
 
 /**
  * Take a message `string`, or `LogInfo` object,
  * and emit an event with a `LogData` object.
- *
- * For `LogLevel.error`, if `LogInfo` does not have a `stack`,
- * one is generated and set on the `LogData`.
  *
  * @param info
  * @param level
@@ -135,34 +81,27 @@ function emitLogData(
   tag: string,
   level: LogLevel
 ): void {
-  let message = ''
-  if (typeof info === 'object' && info.message !== undefined) {
-    message = info.message
-  } else if (typeof info === 'string') {
-    message = info
-  }
+  const message =
+    typeof info === 'string'
+      ? info
+      : typeof info === 'object'
+      ? info?.message ?? ''
+      : ''
 
-  const data: LogData = { tag, level, message }
+  const stack = typeof info === 'object' ? info?.stack : undefined
 
-  if (typeof info === 'object' && info.stack !== undefined) {
-    data.stack = info.stack
-  } else if (level <= LogLevel.error) {
-    const error = new Error()
-    if (error.stack !== undefined) {
-      // Remove the first three lines of the stack trace which
-      // are not useful (see issue #3)
-      const lines = error.stack.split('\n')
-      data.stack = [lines[0], ...lines.slice(3)].join('\n')
-    }
+  const data: LogData = { tag, level, message, stack }
+
+  for (const handler of logga) {
+    handler(data)
   }
-  bus.emit(LOG_EVENT_NAME, data)
 }
 
 /**
  * Get all handlers.
  */
 export function handlers(): LogHandler[] {
-  return bus.listeners(LOG_EVENT_NAME)
+  return logga
 }
 
 /**
@@ -202,7 +141,7 @@ export function addHandler(
       handler(logData)
     }
   }
-  bus.addListener(LOG_EVENT_NAME, listener)
+  logga.push(listener)
   return listener
 }
 
@@ -212,14 +151,15 @@ export function addHandler(
  * @param handler The handler function to remove.
  */
 export function removeHandler(handler: LogHandler): void {
-  bus.removeListener(LOG_EVENT_NAME, handler)
+  const index = logga.indexOf(handler)
+  if (index > -1) logga.splice(index, 1)
 }
 
 /**
  * Remove all handlers.
  */
 export function removeHandlers(): void {
-  bus.removeAllListeners(LOG_EVENT_NAME)
+  logga.splice(0, logga.length)
 }
 
 /**
@@ -235,6 +175,37 @@ export function replaceHandlers(handler: LogHandler): void {
 }
 
 const defaultHandlerHistory = new Map<string, number>()
+
+/**
+ * Escape a string for inclusion in JSON.
+ *
+ * Based on the list at https://www.json.org minus the backspace character (U+0008)
+ *
+ * @param value The string to escape
+ */
+export function escape(value: string): string {
+  return value.replace(/"|\\|\/|\f|\n|\r|\t/g, (char) => {
+    switch (char) {
+      case '"':
+        return '"'
+      case '\\':
+        return '\\\\'
+      case '/':
+        return '\\/'
+      case '\f':
+        return '\\f'
+      case '\n':
+        return '\\n'
+      case '\r':
+        return '\\r'
+      case '\t':
+        return '\\t'
+    }
+    // Ignore in coverage because is expected to be unreachable
+    // istanbul ignore next
+    return char
+  })
+}
 
 /**
  * Default log event handler.
@@ -257,6 +228,7 @@ export function defaultHandler(
   data: LogData,
   options: {
     maxLevel?: LogLevel
+    fastTime?: boolean
     showStack?: boolean
     exitOnError?: boolean
     throttle?: {
@@ -290,19 +262,27 @@ export function defaultHandler(
 
   // Generate a human readable or machine readable log entry based on
   // environment
-  let entry = ''
   if (
     typeof process !== 'undefined' &&
     process.stderr !== undefined &&
     process.stderr.isTTY !== true
   ) {
-    entry = JSON.stringify({ time: new Date().toISOString(), ...data })
+    const { fastTime = false } = options
+    let json = `{"time":${
+      fastTime ? Date.now() : `"${new Date().toISOString()}"`
+    },"tag":"${tag}","level":${level},"message":"${message}"`
+    if (stack !== undefined) {
+      json += `,"stack":"${escape(stack)}"`
+    }
+    json += '}\n'
+    process.stderr.write(json)
   } else {
     const index = level < 0 ? 0 : level > 3 ? 3 : level
     const label = LogLevel[index].toUpperCase().padEnd(5, ' ')
-    /* istanbul ignore next */
+    let line
+    // istanbul ignore next
     if (typeof window !== 'undefined') {
-      entry = `${label} ${tag} ${message}`
+      line = `${label} ${tag} ${message}`
     } else {
       const emoji = [
         '🚨', // error
@@ -318,13 +298,14 @@ export function defaultHandler(
       ][index]
       const cyan = '\u001b[36m'
       const reset = '\u001b[0m'
-      entry = `${emoji} ${colour}${label}${reset} ${cyan}${tag}${reset} ${message}`
+      line = `${emoji} ${colour}${label}${reset} ${cyan}${tag}${reset} ${message}`
     }
 
     const { showStack = false } = options
-    if (showStack && stack !== undefined) entry += '\n  ' + stack
+    if (showStack && stack !== undefined) line += '\n  ' + stack
+
+    console.error(line)
   }
-  console.error(entry)
 
   const { exitOnError = true } = options
   if (
@@ -350,7 +331,6 @@ if (handlers().length === 0) addHandler(defaultHandler)
  *
  * @param tag The unique application or package name
  */
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function getLogger(tag: string): Logger {
   return {
     error(message: string | LogEvent) {
