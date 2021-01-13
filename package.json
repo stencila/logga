@@ -1,6 +1,6 @@
 {
   "name": "@stencila/logga",
-  "version": "3.0.1",
+  "version": "4.0.0",
   "description": "Unified logging across related Javascript modules",
   "main": "dist/lib/logga.js",
   "module": "dist/lib/logga.mjs",

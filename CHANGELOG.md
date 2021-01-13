@@ -1,3 +1,31 @@
+# [4.0.0](https://github.com/stencila/logga/compare/v3.0.1...v4.0.0) (2021-01-13)
+
+
+* Merge pull request #80 from stencila/perf ([fb9b270](https://github.com/stencila/logga/commit/fb9b270944812785095a5509df847485c5ec6f7b)), closes [#80](https://github.com/stencila/logga/issues/80)
+
+
+### Bug Fixes
+
+* **Escaping:** Remove unecessary branch ([2708f16](https://github.com/stencila/logga/commit/2708f161276c72ce8e80f7989c2bd0860db765d6))
+
+
+### Performance Improvements
+
+* **Benchmarks:** Add a higher precision benchmark ([ab3e1d9](https://github.com/stencila/logga/commit/ab3e1d944a947a30d93604bdb6d7a63240c5e6f3))
+* **Benchmarks:** Add benchmarking script ([ffbbcc2](https://github.com/stencila/logga/commit/ffbbcc2ee2cbf6caa987021ac9d61d080005c8df))
+* **Benchmarks:** Use plain string messages ([503ce1a](https://github.com/stencila/logga/commit/503ce1ad61d24c737392755c4c706ab635ce7307))
+* **Deps:** Remove benmarking dependencies from package.json ([8fa458a](https://github.com/stencila/logga/commit/8fa458a0e1e2c7d0e9fa03d1c7e1804c00cb3821))
+* **Errors:** Remove automatic error stack generation ([2bd2aae](https://github.com/stencila/logga/commit/2bd2aaee0d6b166019fe3f990fad666e36442f3c))
+* **Fast time:** Add a fastTime option ([7259dba](https://github.com/stencila/logga/commit/7259dbac0b4ec2e245696693367bcb4fe7396c98))
+* **Handlers:** Use a global singleton, rather than event bus ([5e20c8c](https://github.com/stencila/logga/commit/5e20c8c8eb5a085efc48ccd073a86c7c526f1284))
+* **Output:** Use template strings rather than JSON.stringify ([e33e2f3](https://github.com/stencila/logga/commit/e33e2f31f5eb40b9bdc90fa423491f4716163b12))
+* **Output:** Write to process.stderr directly ([5d4db3b](https://github.com/stencila/logga/commit/5d4db3be456ba0691be61f88774c35c96a8ff8e2))
+
+
+### BREAKING CHANGES
+
+* Mostly internal performance improvements but given the scale of changes labeling as a breaking change to trigger a major release.
+
 ## [3.0.1](https://github.com/stencila/logga/compare/v3.0.0...v3.0.1) (2020-10-16)
 
 
