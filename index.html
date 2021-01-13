@@ -7,6 +7,7 @@
 	<meta name="description" content="Documentation for @stencila/logga">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="assets/css/main.css">
+	<script async src="assets/js/search.js" id="search-script"></script>
 </head>
 <body>
 <header>
@@ -40,8 +41,6 @@
 							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
 							<input type="checkbox" id="tsd-filter-externals" checked />
 							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
-							<input type="checkbox" id="tsd-filter-only-exported" />
-							<label class="tsd-widget" for="tsd-filter-only-exported">Only exported</label>
 						</div>
 					</div>
 					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
@@ -51,12 +50,7 @@
 	</div>
 	<div class="tsd-page-title">
 		<div class="container">
-			<ul class="tsd-breadcrumb">
-				<li>
-					<a href="globals.html">Globals</a>
-				</li>
-			</ul>
-			<h1>@stencila/logga</h1>
+			<h1>Project @stencila/logga</h1>
 		</div>
 	</div>
 </header>
@@ -83,7 +77,8 @@
 				<a href="#install" id="install" style="color: inherit; text-decoration: none;">
 					<h2>Install</h2>
 				</a>
-				<pre><code class="language-bash">npm install --save @stencila/logga</code></pre>
+				<pre><code class="language-bash"><span style="color: #000000">npm install --save @stencila/logga</span>
+</code></pre>
 				<a href="#usage" id="usage" style="color: inherit; text-decoration: none;">
 					<h2>Usage</h2>
 				</a>
@@ -91,24 +86,25 @@
 					<h3>Emitting log events</h3>
 				</a>
 				<p>Create a new logger by calling <code>getLogger</code> with a unique tag to identify your app and/or module. Then emit log events using the <code>debug</code>, <code>info</code>, <code>warn</code> and <code>error</code> functions. You can pass them a message string or a <code>LogInfo</code> object.</p>
-				<pre><code class="language-js"><span class="hljs-keyword">const</span> { getLogger } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;@stencila/logga&#x27;</span>)
+				<pre><code class="language-js"><span style="color: #0000FF">const</span><span style="color: #000000"> { </span><span style="color: #0070C1">getLogger</span><span style="color: #000000"> } = </span><span style="color: #795E26">require</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;@stencila/logga&#039;</span><span style="color: #000000">)</span>
 
-<span class="hljs-keyword">const</span> log = getLogger(<span class="hljs-string">&#x27;example&#x27;</span>)
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">log</span><span style="color: #000000"> = </span><span style="color: #795E26">getLogger</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;example&#039;</span><span style="color: #000000">)</span>
 
-log.debug(<span class="hljs-string">&#x27;This is line five.&#x27;</span>)
-log.info(<span class="hljs-string">&#x27;Everything is just fine.&#x27;</span>)
-log.warn(<span class="hljs-string">&#x27;Oh, oh, not no much.&#x27;</span>)
-log.error(<span class="hljs-string">&#x27;Aaargh, an error!&#x27;</span>)
+<span style="color: #001080">log</span><span style="color: #000000">.</span><span style="color: #795E26">debug</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;This is line five.&#039;</span><span style="color: #000000">)</span>
+<span style="color: #001080">log</span><span style="color: #000000">.</span><span style="color: #795E26">info</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;Everything is just fine.&#039;</span><span style="color: #000000">)</span>
+<span style="color: #001080">log</span><span style="color: #000000">.</span><span style="color: #795E26">warn</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;Oh, oh, not no much.&#039;</span><span style="color: #000000">)</span>
+<span style="color: #001080">log</span><span style="color: #000000">.</span><span style="color: #795E26">error</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;Aaargh, an error!&#039;</span><span style="color: #000000">)</span>
 
-<span class="hljs-keyword">try</span> {
-  <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">&#x27;I am an error object.&#x27;</span>)
-} <span class="hljs-keyword">catch</span> (error) {
-  <span class="hljs-keyword">const</span> { message, stack } = error
-  log.error({
-    <span class="hljs-attr">message</span>: <span class="hljs-string">&#x27;Woaaah something bad happened! &#x27;</span> + message,
-    stack,
-  })
-}</code></pre>
+<span style="color: #AF00DB">try</span><span style="color: #000000"> {</span>
+<span style="color: #000000">  </span><span style="color: #AF00DB">throw</span><span style="color: #000000"> </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #267F99">Error</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;I am an error object.&#039;</span><span style="color: #000000">)</span>
+<span style="color: #000000">} </span><span style="color: #AF00DB">catch</span><span style="color: #000000"> (</span><span style="color: #001080">error</span><span style="color: #000000">) {</span>
+<span style="color: #000000">  </span><span style="color: #0000FF">const</span><span style="color: #000000"> { </span><span style="color: #0070C1">message</span><span style="color: #000000">, </span><span style="color: #0070C1">stack</span><span style="color: #000000"> } = </span><span style="color: #001080">error</span>
+<span style="color: #000000">  </span><span style="color: #001080">log</span><span style="color: #000000">.</span><span style="color: #795E26">error</span><span style="color: #000000">({</span>
+<span style="color: #000000">    </span><span style="color: #001080">message:</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;Woaaah something bad happened! &#039;</span><span style="color: #000000"> + </span><span style="color: #001080">message</span><span style="color: #000000">,</span>
+<span style="color: #000000">    </span><span style="color: #001080">stack</span><span style="color: #000000">,</span>
+<span style="color: #000000">  })</span>
+<span style="color: #000000">}</span>
+</code></pre>
 				<p>See <a href="https://reflectoring.io/logging-levels/">this post</a> for advice on when to use the alternative log levels. In summary,</p>
 				<ul>
 					<li><p>The <code>ERROR</code> level should only be used when the application really is in trouble. Users are being affected without having a way to work around the issue.</p>
@@ -126,31 +122,35 @@ log.error(<span class="hljs-string">&#x27;Aaargh, an error!&#x27;</span>)
 				<p>The default log handler prints log data to <code>console.error</code>. If <code>stderr</code> is TTY log data is formatted for human consumption with emoji, colours and stack trace (for errors):</p>
 				<p><img src="screenshot.png" alt=""></p>
 				<p>If <code>stderr</code> is not TTY log data is formatted for machine consumption (e.g. for log files) as <a href="http://ndjson.org/">ndjson</a>, with a time stamp, if <code>stderr</code> (for machine consumption e.g. log files):</p>
-				<pre><code class="language-json">{<span class="hljs-attr">&quot;time&quot;</span>:<span class="hljs-string">&quot;2019-07-02T21:19:24.872Z&quot;</span>,<span class="hljs-attr">&quot;tag&quot;</span>:<span class="hljs-string">&quot;example&quot;</span>,<span class="hljs-attr">&quot;level&quot;</span>:<span class="hljs-number">3</span>,<span class="hljs-attr">&quot;message&quot;</span>:<span class="hljs-string">&quot;This is line five.&quot;</span>,<span class="hljs-attr">&quot;stack&quot;</span>:<span class="hljs-string">&quot;Error\n    at Object.&lt;anonymous&gt; (/home/nokome/stencila/source/logga/example.js:21:5)\n    at Module._compile (internal/modules/cjs/loader.js:689:30)\n    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)\n    at Module.load (internal/modules/cjs/loader.js:599:32)\n    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)\n    at Function.Module._load (internal/modules/cjs/loader.js:530:3)\n    at Function.Module.runMain (internal/modules/cjs/loader.js:742:12)\n    at startup (internal/bootstrap/node.js:266:19)&quot;</span>}
-{<span class="hljs-attr">&quot;time&quot;</span>:<span class="hljs-string">&quot;2019-07-02T21:19:24.875Z&quot;</span>,<span class="hljs-attr">&quot;tag&quot;</span>:<span class="hljs-string">&quot;example&quot;</span>,<span class="hljs-attr">&quot;level&quot;</span>:<span class="hljs-number">2</span>,<span class="hljs-attr">&quot;message&quot;</span>:<span class="hljs-string">&quot;Everything is just fine.&quot;</span>,<span class="hljs-attr">&quot;stack&quot;</span>:<span class="hljs-string">&quot;Error\n    at Object.&lt;anonymous&gt; (/home/nokome/stencila/source/logga/example.js:22:5)\n    at Module._compile (internal/modules/cjs/loader.js:689:30)\n    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)\n    at Module.load (internal/modules/cjs/loader.js:599:32)\n    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)\n    at Function.Module._load (internal/modules/cjs/loader.js:530:3)\n    at Function.Module.runMain (internal/modules/cjs/loader.js:742:12)\n    at startup (internal/bootstrap/node.js:266:19)&quot;</span>}
-{<span class="hljs-attr">&quot;time&quot;</span>:<span class="hljs-string">&quot;2019-07-02T21:19:24.875Z&quot;</span>,<span class="hljs-attr">&quot;tag&quot;</span>:<span class="hljs-string">&quot;example&quot;</span>,<span class="hljs-attr">&quot;level&quot;</span>:<span class="hljs-number">1</span>,<span class="hljs-attr">&quot;message&quot;</span>:<span class="hljs-string">&quot;Oh, oh, not no much.&quot;</span>,<span class="hljs-attr">&quot;stack&quot;</span>:<span class="hljs-string">&quot;Error\n    at Object.&lt;anonymous&gt; (/home/nokome/stencila/source/logga/example.js:23:5)\n    at Module._compile (internal/modules/cjs/loader.js:689:30)\n    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)\n    at Module.load (internal/modules/cjs/loader.js:599:32)\n    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)\n    at Function.Module._load (internal/modules/cjs/loader.js:530:3)\n    at Function.Module.runMain (internal/modules/cjs/loader.js:742:12)\n    at startup (internal/bootstrap/node.js:266:19)&quot;</span>}
-{<span class="hljs-attr">&quot;time&quot;</span>:<span class="hljs-string">&quot;2019-07-02T21:19:24.875Z&quot;</span>,<span class="hljs-attr">&quot;tag&quot;</span>:<span class="hljs-string">&quot;example&quot;</span>,<span class="hljs-attr">&quot;level&quot;</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">&quot;message&quot;</span>:<span class="hljs-string">&quot;Aaargh, an error!&quot;</span>,<span class="hljs-attr">&quot;stack&quot;</span>:<span class="hljs-string">&quot;Error\n    at Object.&lt;anonymous&gt; (/home/nokome/stencila/source/logga/example.js:24:5)\n    at Module._compile (internal/modules/cjs/loader.js:689:30)\n    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)\n    at Module.load (internal/modules/cjs/loader.js:599:32)\n    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)\n    at Function.Module._load (internal/modules/cjs/loader.js:530:3)\n    at Function.Module.runMain (internal/modules/cjs/loader.js:742:12)\n    at startup (internal/bootstrap/node.js:266:19)&quot;</span>}
-{<span class="hljs-attr">&quot;time&quot;</span>:<span class="hljs-string">&quot;2019-07-02T21:19:24.875Z&quot;</span>,<span class="hljs-attr">&quot;tag&quot;</span>:<span class="hljs-string">&quot;example&quot;</span>,<span class="hljs-attr">&quot;level&quot;</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">&quot;message&quot;</span>:<span class="hljs-string">&quot;Woaaah something bad happened! I am an error object.&quot;</span>,<span class="hljs-attr">&quot;stack&quot;</span>:<span class="hljs-string">&quot;Error: I am an error object.\n    at Object.&lt;anonymous&gt; (/home/nokome/stencila/source/logga/example.js:27:9)\n    at Module._compile (internal/modules/cjs/loader.js:689:30)\n    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)\n    at Module.load (internal/modules/cjs/loader.js:599:32)\n    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)\n    at Function.Module._load (internal/modules/cjs/loader.js:530:3)\n    at Function.Module.runMain (internal/modules/cjs/loader.js:742:12)\n    at startup (internal/bootstrap/node.js:266:19)\n    at bootstrapNodeJSCore (internal/bootstrap/node.js:596:3)&quot;</span>}</code></pre>
+				<pre><code class="language-json"><span style="color: #000000">{</span><span style="color: #0451A5">&quot;time&quot;</span><span style="color: #000000">:</span><span style="color: #A31515">&quot;2019-07-02T21:19:24.872Z&quot;</span><span style="color: #000000">,</span><span style="color: #0451A5">&quot;tag&quot;</span><span style="color: #000000">:</span><span style="color: #A31515">&quot;example&quot;</span><span style="color: #000000">,</span><span style="color: #0451A5">&quot;level&quot;</span><span style="color: #000000">:</span><span style="color: #098658">3</span><span style="color: #000000">,</span><span style="color: #0451A5">&quot;message&quot;</span><span style="color: #000000">:</span><span style="color: #A31515">&quot;This is line five.&quot;</span><span style="color: #000000">,</span><span style="color: #0451A5">&quot;stack&quot;</span><span style="color: #000000">:</span><span style="color: #A31515">&quot;Error</span><span style="color: #EE0000">\n</span><span style="color: #A31515">    at Object.&lt;anonymous&gt; (/home/nokome/stencila/source/logga/example.js:21:5)</span><span style="color: #EE0000">\n</span><span style="color: #A31515">    at Module._compile (internal/modules/cjs/loader.js:689:30)</span><span style="color: #EE0000">\n</span><span style="color: #A31515">    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)</span><span style="color: #EE0000">\n</span><span style="color: #A31515">    at Module.load (internal/modules/cjs/loader.js:599:32)</span><span style="color: #EE0000">\n</span><span style="color: #A31515">    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)</span><span style="color: #EE0000">\n</span><span style="color: #A31515">    at Function.Module._load (internal/modules/cjs/loader.js:530:3)</span><span style="color: #EE0000">\n</span><span style="color: #A31515">    at Function.Module.runMain (internal/modules/cjs/loader.js:742:12)</span><span style="color: #EE0000">\n</span><span style="color: #A31515">    at startup (internal/bootstrap/node.js:266:19)&quot;</span><span style="color: #000000">}</span>
+<span style="color: #000000">{</span><span style="color: #0451A5">&quot;time&quot;</span><span style="color: #000000">:</span><span style="color: #A31515">&quot;2019-07-02T21:19:24.875Z&quot;</span><span style="color: #000000">,</span><span style="color: #0451A5">&quot;tag&quot;</span><span style="color: #000000">:</span><span style="color: #A31515">&quot;example&quot;</span><span style="color: #000000">,</span><span style="color: #0451A5">&quot;level&quot;</span><span style="color: #000000">:</span><span style="color: #098658">2</span><span style="color: #000000">,</span><span style="color: #0451A5">&quot;message&quot;</span><span style="color: #000000">:</span><span style="color: #A31515">&quot;Everything is just fine.&quot;</span><span style="color: #000000">,</span><span style="color: #0451A5">&quot;stack&quot;</span><span style="color: #000000">:</span><span style="color: #A31515">&quot;Error</span><span style="color: #EE0000">\n</span><span style="color: #A31515">    at Object.&lt;anonymous&gt; (/home/nokome/stencila/source/logga/example.js:22:5)</span><span style="color: #EE0000">\n</span><span style="color: #A31515">    at Module._compile (internal/modules/cjs/loader.js:689:30)</span><span style="color: #EE0000">\n</span><span style="color: #A31515">    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)</span><span style="color: #EE0000">\n</span><span style="color: #A31515">    at Module.load (internal/modules/cjs/loader.js:599:32)</span><span style="color: #EE0000">\n</span><span style="color: #A31515">    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)</span><span style="color: #EE0000">\n</span><span style="color: #A31515">    at Function.Module._load (internal/modules/cjs/loader.js:530:3)</span><span style="color: #EE0000">\n</span><span style="color: #A31515">    at Function.Module.runMain (internal/modules/cjs/loader.js:742:12)</span><span style="color: #EE0000">\n</span><span style="color: #A31515">    at startup (internal/bootstrap/node.js:266:19)&quot;</span><span style="color: #000000">}</span>
+<span style="color: #000000">{</span><span style="color: #0451A5">&quot;time&quot;</span><span style="color: #000000">:</span><span style="color: #A31515">&quot;2019-07-02T21:19:24.875Z&quot;</span><span style="color: #000000">,</span><span style="color: #0451A5">&quot;tag&quot;</span><span style="color: #000000">:</span><span style="color: #A31515">&quot;example&quot;</span><span style="color: #000000">,</span><span style="color: #0451A5">&quot;level&quot;</span><span style="color: #000000">:</span><span style="color: #098658">1</span><span style="color: #000000">,</span><span style="color: #0451A5">&quot;message&quot;</span><span style="color: #000000">:</span><span style="color: #A31515">&quot;Oh, oh, not no much.&quot;</span><span style="color: #000000">,</span><span style="color: #0451A5">&quot;stack&quot;</span><span style="color: #000000">:</span><span style="color: #A31515">&quot;Error</span><span style="color: #EE0000">\n</span><span style="color: #A31515">    at Object.&lt;anonymous&gt; (/home/nokome/stencila/source/logga/example.js:23:5)</span><span style="color: #EE0000">\n</span><span style="color: #A31515">    at Module._compile (internal/modules/cjs/loader.js:689:30)</span><span style="color: #EE0000">\n</span><span style="color: #A31515">    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)</span><span style="color: #EE0000">\n</span><span style="color: #A31515">    at Module.load (internal/modules/cjs/loader.js:599:32)</span><span style="color: #EE0000">\n</span><span style="color: #A31515">    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)</span><span style="color: #EE0000">\n</span><span style="color: #A31515">    at Function.Module._load (internal/modules/cjs/loader.js:530:3)</span><span style="color: #EE0000">\n</span><span style="color: #A31515">    at Function.Module.runMain (internal/modules/cjs/loader.js:742:12)</span><span style="color: #EE0000">\n</span><span style="color: #A31515">    at startup (internal/bootstrap/node.js:266:19)&quot;</span><span style="color: #000000">}</span>
+<span style="color: #000000">{</span><span style="color: #0451A5">&quot;time&quot;</span><span style="color: #000000">:</span><span style="color: #A31515">&quot;2019-07-02T21:19:24.875Z&quot;</span><span style="color: #000000">,</span><span style="color: #0451A5">&quot;tag&quot;</span><span style="color: #000000">:</span><span style="color: #A31515">&quot;example&quot;</span><span style="color: #000000">,</span><span style="color: #0451A5">&quot;level&quot;</span><span style="color: #000000">:</span><span style="color: #098658">0</span><span style="color: #000000">,</span><span style="color: #0451A5">&quot;message&quot;</span><span style="color: #000000">:</span><span style="color: #A31515">&quot;Aaargh, an error!&quot;</span><span style="color: #000000">,</span><span style="color: #0451A5">&quot;stack&quot;</span><span style="color: #000000">:</span><span style="color: #A31515">&quot;Error</span><span style="color: #EE0000">\n</span><span style="color: #A31515">    at Object.&lt;anonymous&gt; (/home/nokome/stencila/source/logga/example.js:24:5)</span><span style="color: #EE0000">\n</span><span style="color: #A31515">    at Module._compile (internal/modules/cjs/loader.js:689:30)</span><span style="color: #EE0000">\n</span><span style="color: #A31515">    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)</span><span style="color: #EE0000">\n</span><span style="color: #A31515">    at Module.load (internal/modules/cjs/loader.js:599:32)</span><span style="color: #EE0000">\n</span><span style="color: #A31515">    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)</span><span style="color: #EE0000">\n</span><span style="color: #A31515">    at Function.Module._load (internal/modules/cjs/loader.js:530:3)</span><span style="color: #EE0000">\n</span><span style="color: #A31515">    at Function.Module.runMain (internal/modules/cjs/loader.js:742:12)</span><span style="color: #EE0000">\n</span><span style="color: #A31515">    at startup (internal/bootstrap/node.js:266:19)&quot;</span><span style="color: #000000">}</span>
+<span style="color: #000000">{</span><span style="color: #0451A5">&quot;time&quot;</span><span style="color: #000000">:</span><span style="color: #A31515">&quot;2019-07-02T21:19:24.875Z&quot;</span><span style="color: #000000">,</span><span style="color: #0451A5">&quot;tag&quot;</span><span style="color: #000000">:</span><span style="color: #A31515">&quot;example&quot;</span><span style="color: #000000">,</span><span style="color: #0451A5">&quot;level&quot;</span><span style="color: #000000">:</span><span style="color: #098658">0</span><span style="color: #000000">,</span><span style="color: #0451A5">&quot;message&quot;</span><span style="color: #000000">:</span><span style="color: #A31515">&quot;Woaaah something bad happened! I am an error object.&quot;</span><span style="color: #000000">,</span><span style="color: #0451A5">&quot;stack&quot;</span><span style="color: #000000">:</span><span style="color: #A31515">&quot;Error: I am an error object.</span><span style="color: #EE0000">\n</span><span style="color: #A31515">    at Object.&lt;anonymous&gt; (/home/nokome/stencila/source/logga/example.js:27:9)</span><span style="color: #EE0000">\n</span><span style="color: #A31515">    at Module._compile (internal/modules/cjs/loader.js:689:30)</span><span style="color: #EE0000">\n</span><span style="color: #A31515">    at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)</span><span style="color: #EE0000">\n</span><span style="color: #A31515">    at Module.load (internal/modules/cjs/loader.js:599:32)</span><span style="color: #EE0000">\n</span><span style="color: #A31515">    at tryModuleLoad (internal/modules/cjs/loader.js:538:12)</span><span style="color: #EE0000">\n</span><span style="color: #A31515">    at Function.Module._load (internal/modules/cjs/loader.js:530:3)</span><span style="color: #EE0000">\n</span><span style="color: #A31515">    at Function.Module.runMain (internal/modules/cjs/loader.js:742:12)</span><span style="color: #EE0000">\n</span><span style="color: #A31515">    at startup (internal/bootstrap/node.js:266:19)</span><span style="color: #EE0000">\n</span><span style="color: #A31515">    at bootstrapNodeJSCore (internal/bootstrap/node.js:596:3)&quot;</span><span style="color: #000000">}</span>
+</code></pre>
 				<p>See <a href="index.test.html"><code>index.test.html</code></a> for example usage in the browser.</p>
 				<p>You can register a new handler by calling <code>addHandler</code> with a handling function. Or use <code>replaceHandlers</code> to replace any existing log handlers (including the default). If you don&#39;t want any log handling at all, remove the default handler using <code>removeHandlers</code>.</p>
 				<p>Logga can be used with a log handling library e.g. Winston, Pino.</p>
-				<pre><code class="language-javascript"><span class="hljs-comment">// In library, create a named logger</span>
-<span class="hljs-keyword">const</span> logger = getLogger(<span class="hljs-string">&#x27;encoda&#x27;</span>)</code></pre>
-				<pre><code class="language-javascript"><span class="hljs-comment">// Handle the log messages in application code</span>
-addHandler(<span class="hljs-function">(<span class="hljs-params">data: LogData</span>) =&gt;</span> {
-  <span class="hljs-comment">// Send off to log output function</span>
-  winstonLogger.log(LogLevel[data.level], data.message)
+				<pre><code class="language-javascript"><span style="color: #008000">// In library, create a named logger</span>
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">logger</span><span style="color: #000000"> = </span><span style="color: #795E26">getLogger</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;encoda&#039;</span><span style="color: #000000">)</span>
+</code></pre>
+				<pre><code class="language-javascript"><span style="color: #008000">// Handle the log messages in application code</span>
+<span style="color: #795E26">addHandler</span><span style="color: #000000">((</span><span style="color: #001080">data</span><span style="color: #000000">: </span><span style="color: #267F99">LogData</span><span style="color: #000000">) </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> {</span>
+<span style="color: #000000">  </span><span style="color: #008000">// Send off to log output function</span>
+<span style="color: #000000">  </span><span style="color: #001080">winstonLogger</span><span style="color: #000000">.</span><span style="color: #795E26">log</span><span style="color: #000000">(</span><span style="color: #001080">LogLevel</span><span style="color: #000000">[</span><span style="color: #001080">data</span><span style="color: #000000">.</span><span style="color: #001080">level</span><span style="color: #000000">], </span><span style="color: #001080">data</span><span style="color: #000000">.</span><span style="color: #001080">message</span><span style="color: #000000">)</span>
 
-  <span class="hljs-comment">// or filter on tag</span>
-  <span class="hljs-keyword">if</span> (data.tag === <span class="hljs-string">&#x27;encoda&#x27;</span>) {
-    <span class="hljs-comment">// do something different</span>
-  }
-})</code></pre>
+<span style="color: #000000">  </span><span style="color: #008000">// or filter on tag</span>
+<span style="color: #000000">  </span><span style="color: #AF00DB">if</span><span style="color: #000000"> (</span><span style="color: #001080">data</span><span style="color: #000000">.</span><span style="color: #001080">tag</span><span style="color: #000000"> === </span><span style="color: #A31515">&#039;encoda&#039;</span><span style="color: #000000">) {</span>
+<span style="color: #000000">    </span><span style="color: #008000">// do something different</span>
+<span style="color: #000000">  }</span>
+<span style="color: #000000">})</span>
+</code></pre>
 				<a href="#exiting-the-process" id="exiting-the-process" style="color: inherit; text-decoration: none;">
 					<h3>Exiting the process</h3>
 				</a>
 				<p>When in Node.js, the <code>defaultHandler</code> will exit the process, with code 1, on the first error event. To disable this behavior set the option <code>exitOnError: false</code> e.g.</p>
-				<pre><code class="language-js">replaceHandlers(<span class="hljs-function">(<span class="hljs-params">data</span>) =&gt;</span> defaultHandler(data, { <span class="hljs-attr">exitOnError</span>: <span class="hljs-literal">false</span> }))</code></pre>
+				<pre><code class="language-js"><span style="color: #795E26">replaceHandlers</span><span style="color: #000000">((</span><span style="color: #001080">data</span><span style="color: #000000">) </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #795E26">defaultHandler</span><span style="color: #000000">(</span><span style="color: #001080">data</span><span style="color: #000000">, { </span><span style="color: #001080">exitOnError:</span><span style="color: #000000"> </span><span style="color: #0000FF">false</span><span style="color: #000000"> }))</span>
+</code></pre>
 				<a href="#see-also" id="see-also" style="color: inherit; text-decoration: none;">
 					<h2>See also</h2>
 				</a>
@@ -167,8 +167,8 @@ addHandler(<span class="hljs-function">(<span class="hljs-params">data: LogData<
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
 			<nav class="tsd-navigation primary">
 				<ul>
-					<li class="globals  ">
-						<a href="globals.html"><em>Globals</em></a>
+					<li class=" ">
+						<a href="modules.html">Exports</a>
 					</li>
 				</ul>
 			</nav>
@@ -189,38 +189,29 @@ addHandler(<span class="hljs-function">(<span class="hljs-params">data: LogData<
 					<li class=" tsd-kind-interface">
 						<a href="interfaces/logger.html" class="tsd-kind-icon">Logger</a>
 					</li>
-					<li class=" tsd-kind-variable">
-						<a href="globals.html#log_event_name" class="tsd-kind-icon">LOG_<wbr>EVENT_<wbr>NAME</a>
-					</li>
-					<li class=" tsd-kind-variable">
-						<a href="globals.html#bus" class="tsd-kind-icon">bus</a>
-					</li>
-					<li class=" tsd-kind-variable">
-						<a href="globals.html#defaulthandlerhistory" class="tsd-kind-icon">default<wbr>Handler<wbr>History</a>
+					<li class=" tsd-kind-function">
+						<a href="modules.html#addhandler" class="tsd-kind-icon">add<wbr>Handler</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="globals.html#addhandler" class="tsd-kind-icon">add<wbr>Handler</a>
+						<a href="modules.html#defaulthandler" class="tsd-kind-icon">default<wbr>Handler</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="globals.html#defaulthandler" class="tsd-kind-icon">default<wbr>Handler</a>
+						<a href="modules.html#escape" class="tsd-kind-icon">escape</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="globals.html#emitlogdata" class="tsd-kind-icon">emit<wbr>Log<wbr>Data</a>
+						<a href="modules.html#getlogger" class="tsd-kind-icon">get<wbr>Logger</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="globals.html#getlogger" class="tsd-kind-icon">get<wbr>Logger</a>
+						<a href="modules.html#handlers" class="tsd-kind-icon">handlers</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="globals.html#handlers" class="tsd-kind-icon">handlers</a>
+						<a href="modules.html#removehandler" class="tsd-kind-icon">remove<wbr>Handler</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="globals.html#removehandler" class="tsd-kind-icon">remove<wbr>Handler</a>
+						<a href="modules.html#removehandlers" class="tsd-kind-icon">remove<wbr>Handlers</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="globals.html#removehandlers" class="tsd-kind-icon">remove<wbr>Handlers</a>
-					</li>
-					<li class=" tsd-kind-function">
-						<a href="globals.html#replacehandlers" class="tsd-kind-icon">replace<wbr>Handlers</a>
+						<a href="modules.html#replacehandlers" class="tsd-kind-icon">replace<wbr>Handlers</a>
 					</li>
 				</ul>
 			</nav>

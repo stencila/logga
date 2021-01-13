@@ -7,6 +7,7 @@
 	<meta name="description" content="Documentation for @stencila/logga">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
+	<script async src="../assets/js/search.js" id="search-script"></script>
 </head>
 <body>
 <header>
@@ -40,8 +41,6 @@
 							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
 							<input type="checkbox" id="tsd-filter-externals" checked />
 							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
-							<input type="checkbox" id="tsd-filter-only-exported" />
-							<label class="tsd-widget" for="tsd-filter-only-exported">Only exported</label>
 						</div>
 					</div>
 					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
@@ -53,7 +52,7 @@
 		<div class="container">
 			<ul class="tsd-breadcrumb">
 				<li>
-					<a href="../globals.html">Globals</a>
+					<a href="../modules.html">@stencila/logga</a>
 				</li>
 				<li>
 					<a href="loglevel.html">LogLevel</a>
@@ -94,10 +93,10 @@
 				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
 					<a name="debug" class="tsd-anchor"></a>
 					<h3>debug</h3>
-					<div class="tsd-signature tsd-kind-icon">debug<span class="tsd-signature-symbol">:</span></div>
+					<div class="tsd-signature tsd-kind-icon">debug<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = 3</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/stencila/logga/blob/9cf7e6e/index.ts#L12">index.ts:12</a></li>
+							<li>Defined in <a href="https://github.com/stencila/logga/blob/95fb313/index.ts#L10">index.ts:10</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -107,27 +106,27 @@
 					<div class="tsd-signature tsd-kind-icon">error<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = 0</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/stencila/logga/blob/9cf7e6e/index.ts#L9">index.ts:9</a></li>
+							<li>Defined in <a href="https://github.com/stencila/logga/blob/95fb313/index.ts#L7">index.ts:7</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
 					<a name="info" class="tsd-anchor"></a>
 					<h3>info</h3>
-					<div class="tsd-signature tsd-kind-icon">info<span class="tsd-signature-symbol">:</span></div>
+					<div class="tsd-signature tsd-kind-icon">info<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = 2</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/stencila/logga/blob/9cf7e6e/index.ts#L11">index.ts:11</a></li>
+							<li>Defined in <a href="https://github.com/stencila/logga/blob/95fb313/index.ts#L9">index.ts:9</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
 					<a name="warn" class="tsd-anchor"></a>
 					<h3>warn</h3>
-					<div class="tsd-signature tsd-kind-icon">warn<span class="tsd-signature-symbol">:</span></div>
+					<div class="tsd-signature tsd-kind-icon">warn<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = 1</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/stencila/logga/blob/9cf7e6e/index.ts#L10">index.ts:10</a></li>
+							<li>Defined in <a href="https://github.com/stencila/logga/blob/95fb313/index.ts#L8">index.ts:8</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -136,8 +135,8 @@
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
 			<nav class="tsd-navigation primary">
 				<ul>
-					<li class="globals  ">
-						<a href="../globals.html"><em>Globals</em></a>
+					<li class=" ">
+						<a href="../modules.html">Exports</a>
 					</li>
 				</ul>
 			</nav>
@@ -176,38 +175,29 @@
 					<li class=" tsd-kind-interface">
 						<a href="../interfaces/logger.html" class="tsd-kind-icon">Logger</a>
 					</li>
-					<li class=" tsd-kind-variable">
-						<a href="../globals.html#log_event_name" class="tsd-kind-icon">LOG_<wbr>EVENT_<wbr>NAME</a>
-					</li>
-					<li class=" tsd-kind-variable">
-						<a href="../globals.html#bus" class="tsd-kind-icon">bus</a>
-					</li>
-					<li class=" tsd-kind-variable">
-						<a href="../globals.html#defaulthandlerhistory" class="tsd-kind-icon">default<wbr>Handler<wbr>History</a>
+					<li class=" tsd-kind-function">
+						<a href="../modules.html#addhandler" class="tsd-kind-icon">add<wbr>Handler</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="../globals.html#addhandler" class="tsd-kind-icon">add<wbr>Handler</a>
+						<a href="../modules.html#defaulthandler" class="tsd-kind-icon">default<wbr>Handler</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="../globals.html#defaulthandler" class="tsd-kind-icon">default<wbr>Handler</a>
+						<a href="../modules.html#escape" class="tsd-kind-icon">escape</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="../globals.html#emitlogdata" class="tsd-kind-icon">emit<wbr>Log<wbr>Data</a>
+						<a href="../modules.html#getlogger" class="tsd-kind-icon">get<wbr>Logger</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="../globals.html#getlogger" class="tsd-kind-icon">get<wbr>Logger</a>
+						<a href="../modules.html#handlers" class="tsd-kind-icon">handlers</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="../globals.html#handlers" class="tsd-kind-icon">handlers</a>
+						<a href="../modules.html#removehandler" class="tsd-kind-icon">remove<wbr>Handler</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="../globals.html#removehandler" class="tsd-kind-icon">remove<wbr>Handler</a>
+						<a href="../modules.html#removehandlers" class="tsd-kind-icon">remove<wbr>Handlers</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="../globals.html#removehandlers" class="tsd-kind-icon">remove<wbr>Handlers</a>
-					</li>
-					<li class=" tsd-kind-function">
-						<a href="../globals.html#replacehandlers" class="tsd-kind-icon">replace<wbr>Handlers</a>
+						<a href="../modules.html#replacehandlers" class="tsd-kind-icon">replace<wbr>Handlers</a>
 					</li>
 				</ul>
 			</nav>
