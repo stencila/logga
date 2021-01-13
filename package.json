@@ -24,7 +24,7 @@
     "build:node": "microbundle build --target node --format es,cjs -o dist/lib",
     "build:browser": "microbundle build --name logga --format es,umd -o dist/browser",
     "bench": "npm run build:node && node benchmark.js 2>/dev/null",
-    "docs": "typedoc --mode file --out docs index.ts && cp *.png docs/"
+    "docs": "typedoc --out docs index.ts && cp *.png docs/"
   },
   "repository": {
     "type": "git",
