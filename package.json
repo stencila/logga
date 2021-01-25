@@ -84,5 +84,11 @@
   "prettier": "@stencila/dev-config/prettier-config.json",
   "release": {
     "extends": "@stencila/semantic-release-config"
+  },
+  "renovate": {
+    "extends": [
+      "@stencila",
+      ":pinOnlyDevDependencies"
+    ]
   }
 }
